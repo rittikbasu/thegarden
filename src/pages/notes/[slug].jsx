@@ -28,15 +28,15 @@ export default function NotePage({ note, previousPath }) {
         <button className="text-blue-400">edit</button>
       </div>
       <div className="flex items-center text-sm text-zinc-400 justify-between pt-8 pb-4 mx-2">
-        <p>{note.date.toLowerCase()}</p>
-        <p>{note.time.toLowerCase()}</p>
+        <p>{note && note.date ? note.date.toLowerCase() : ""}</p>
+        <p>{note && note.time ? note.time.toLowerCase() : ""}</p>
       </div>
       <div
         className="flex-grow focus:outline-none tracking-widest font-raleway text-zinc-100 p-4 overflow-y-scroll font-light bg-zinc-900/80 border border-zinc-800/60 rounded-2xl"
         placeholder="what's are you thinking?"
         style={{ wordSpacing: "0.4em" }}
       >
-        {note.text}
+        {note && note.text ? note.text : ""}
       </div>
       <div className="flex justify-end pr-2 pt-2">
         <button className="text-red-500">delete</button>
