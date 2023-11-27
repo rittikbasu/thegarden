@@ -4,11 +4,19 @@ import { HiOutlineUpload } from "react-icons/hi";
 import { FaMicrophone } from "react-icons/fa";
 import { HiArrowLongRight } from "react-icons/hi2";
 import { HiArrowLongLeft } from "react-icons/hi2";
-import { GiOrangeSlice } from "react-icons/gi";
 
-const Post = () => {
+const Post = ({ previousPath }) => {
   const [text, setText] = useState("");
   const textAreaRef = useRef(null);
+
+  let linkPath = "/";
+  if (
+    previousPath === "/search" ||
+    previousPath === "/" ||
+    previousPath === "/reflect"
+  ) {
+    linkPath = `${previousPath}`;
+  }
 
   useEffect(() => {
     textAreaRef.current.focus();
@@ -21,7 +29,7 @@ const Post = () => {
   return (
     <div className="flex flex-col h-screen">
       <div className="flex items-center gap-x-4 pt-8 pb-2">
-        <Link href={"/"} passHref>
+        <Link href={linkPath} passHref>
           <div className="text-orange-500 flex items-center justify-center">
             <div className="flex items-center justify-center">
               <HiArrowLongLeft className="w-6 h-6 mr-2" />
