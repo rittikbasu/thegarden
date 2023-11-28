@@ -44,6 +44,9 @@ const Particles = ({
   };
 
   const onMouseMove = () => {
+    if (!window.matchMedia("(hover: hover)").matches) {
+      return;
+    }
     if (canvasRef.current) {
       const rect = canvasRef.current.getBoundingClientRect();
       const { w, h } = canvasSize.current;
