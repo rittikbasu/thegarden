@@ -39,7 +39,7 @@ const Search = ({ notes, onSearch }) => {
             aiToggle === true
               ? "border-blue-500/80 shadow-blue-500/50"
               : "border-zinc-500/60 shadow-zinc-500/40",
-            "p-2 px-4 w-full max-w-lg rounded-xl transition-all duration-500 bg-zinc-900/60 focus:outline-none border shadow-inner placeholder:px-2 placeholder:text-center"
+            "p-2 px-4 w-full max-w-lg rounded-xl transition duration-700 shadow-lg bg-zinc-900/60 focus:outline-none border placeholder:px-2 placeholder:text-center"
           )}
           placeholder="what are you looking for?"
         />
