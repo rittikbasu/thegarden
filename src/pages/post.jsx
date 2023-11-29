@@ -28,7 +28,7 @@ const Post = ({ previousPath }) => {
   };
   return (
     <div className="flex flex-col h-screen">
-      <div className="flex items-center gap-x-4 pt-8 pb-2">
+      <div className="flex items-center gap-x-4 pt-6 pb-2">
         <Link href={linkPath} passHref>
           <div className="text-orange-500 flex items-center justify-center">
             <div className="flex items-center justify-center">
@@ -43,6 +43,7 @@ const Post = ({ previousPath }) => {
         value={text}
         onChange={handleTextChange}
         ref={textAreaRef}
+        autoFocus
         className="flex-grow focus:outline-none p-4 bg-zinc-900/80 border border-zinc-800/60 rounded-2xl"
         placeholder="what's are you thinking?"
       ></textarea>
