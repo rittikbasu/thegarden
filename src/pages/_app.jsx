@@ -4,8 +4,7 @@ import Header from "@/components/Header";
 import Tab from "@/components/Tab";
 import Particles from "@/components/Particles";
 import "@/styles/globals.css";
-import { Poppins, Bricolage_Grotesque, Raleway } from "@next/font/google";
-import clsx from "clsx";
+import { Poppins, Raleway } from "@next/font/google";
 
 const poppins = Poppins({
   display: "swap",
@@ -13,13 +12,6 @@ const poppins = Poppins({
   variable: "--font-poppins",
   weight: ["100", "200", "400", "500", "600", "700"],
 });
-
-// const bricolage = Bricolage_Grotesque({
-//   display: "swap",
-//   subsets: ["latin"],
-//   variable: "--font-bricolage",
-//   weight: ["400", "500", "600", "700"],
-// });
 
 const raleway = Raleway({
   display: "swap",
@@ -31,7 +23,6 @@ const raleway = Raleway({
 export default function App({ Component, pageProps }) {
   const router = useRouter();
   const [previousPath, setPreviousPath] = useState("");
-  console.log(router.pathname);
 
   useEffect(() => {
     const handleRouteChange = (url) => {
