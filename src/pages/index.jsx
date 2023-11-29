@@ -5,7 +5,7 @@ import { createClient } from "@supabase/supabase-js";
 
 export default function Home({ notes }) {
   return (
-    <div className="bg-black h-screen text-gray-200">
+    <div className="h-screen text-gray-200">
       <Head>
         <title>the garden</title>
       </Head>
