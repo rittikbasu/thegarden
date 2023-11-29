@@ -4,7 +4,7 @@ import Header from "@/components/Header";
 import Tab from "@/components/Tab";
 import Particles from "@/components/Particles";
 import "@/styles/globals.css";
-import { Poppins, Raleway } from "@next/font/google";
+import { Poppins, Work_Sans } from "@next/font/google";
 
 const poppins = Poppins({
   display: "swap",
@@ -13,10 +13,10 @@ const poppins = Poppins({
   weight: ["100", "200", "400", "500", "600", "700"],
 });
 
-const raleway = Raleway({
+const workSans = Work_Sans({
   display: "swap",
   subsets: ["latin"],
-  variable: "--font-raleway",
+  variable: "--font-work-sans",
   weight: ["200", "300", "400", "500", "600", "700"],
 });
 
@@ -37,7 +37,7 @@ export default function App({ Component, pageProps }) {
   }, [router.asPath, router.events]);
   return (
     <div
-      className={`max-w-lg mx-auto px-8 ${poppins.variable} ${raleway.variable} font-sans`}
+      className={`max-w-lg mx-auto px-8 ${poppins.variable} ${workSans.variable} font-sans`}
     >
       <Particles
         className="absolute inset-0 -z-10 animate-fade-in"

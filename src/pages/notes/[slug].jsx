@@ -34,7 +34,7 @@ export default function NotePage({ note, previousPath }) {
       <div
         className="flex-grow focus:outline-none tracking-widest font-raleway text-zinc-100 p-4 overflow-y-scroll font-light bg-zinc-900/80 border border-zinc-800/60 rounded-2xl"
         placeholder="what's are you thinking?"
-        style={{ wordSpacing: "0.4em" }}
+        style={{ wordSpacing: "0.2em" }}
       >
         {note && note.text ? note.text : ""}
       </div>
