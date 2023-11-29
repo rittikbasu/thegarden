@@ -23,9 +23,9 @@ const Note = ({
           ></div>
         )}
         <div className="flex items-center">
-          <div className="bg-zinc-800/70 border border-zinc-700/40 rounded-3xl w-full">
+          <div className="bg-zinc-900/80 border border-zinc-800/60 rounded-3xl w-full">
             <div className="p-4 text-white text-sm">
-              <p className="line-clamp-3 font-raleway tracking-wider">
+              <p className="line-clamp-3 font-workSans tracking-wider">
                 {content.toLowerCase()}
               </p>
             </div>
@@ -45,7 +45,7 @@ const Note = ({
             {/* )} */}
           </div>
         </div>
-        <div className="p-2 text-zinc-400 text-xs flex justify-between">
+        <div className="p-2 mx-1 text-zinc-400 text-xs flex justify-between">
           <div className="text-left">{date.toLowerCase()}</div>
           <div className="text-right">{time.toLowerCase()}</div>
         </div>
