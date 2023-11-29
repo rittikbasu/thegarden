@@ -24,5 +24,8 @@ body {
       rgb(var(--background-end-rgb))
     )
     rgb(var(--background-start-rgb));
-    padding-bottom: env(safe-area-inset-bottom);
+    padding: env(safe-area-inset-top, 20px) env(safe-area-inset-right, 20px) env(
+      safe-area-inset-bottom,
+      20px
+    ) env(safe-area-inset-left, 20px);
 }
