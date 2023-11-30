@@ -9,14 +9,10 @@ const Post = ({ previousPath }) => {
   const [text, setText] = useState("");
   const textAreaRef = useRef(null);
 
-  let linkPath = "/";
-  if (
-    previousPath === "/search" ||
-    previousPath === "/" ||
-    previousPath === "/reflect"
-  ) {
-    linkPath = `${previousPath}`;
-  }
+  const linkPath =
+    previousPath && ["/search", "/", "/reflect"].includes(previousPath)
+      ? previousPath
+      : "/";
 
   useEffect(() => {
     textAreaRef.current.focus();
