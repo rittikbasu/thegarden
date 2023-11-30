@@ -52,7 +52,7 @@ const Search = ({ notes, onSearch }) => {
             }
           />
           {aiToggle && (
-            <button className="mr-2 text-blue-400">
+            <button className="mr-2 text-blue-400 flex items-center justify-center">
               <IoSearchOutline />
             </button>
           )}
