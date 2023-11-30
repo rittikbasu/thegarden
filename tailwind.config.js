@@ -7,6 +7,14 @@ module.exports = {
   ],
   theme: {
     extend: {
+      animation: {
+        cursorblink: "blink 1s step-end infinite",
+      },
+      keyframes: {
+        blink: {
+          "50%": { opacity: 0 },
+        },
+      },
       backgroundImage: {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
         "gradient-conic":
