@@ -1,19 +1,16 @@
 import Link from "next/link";
 import clsx from "clsx";
+import { parse, differenceInCalendarDays } from "date-fns";
 
-const Note = ({
-  id,
-  date,
-  time,
-  content,
-  index,
-  length,
-  prevDate,
-  nextDate,
-}) => {
+const Note = ({ id, date, time, content, index, prevDate, nextDate }) => {
+  const dateFormat = "EEE, MMM d, yyyy";
+  const currentDate = parse(date, dateFormat, new Date());
+  const previousDate = parse(prevDate, dateFormat, new Date());
+
+  const showLine = differenceInCalendarDays(currentDate, previousDate) >= -1;
   return (
     <div className="mb-4">
-      {index !== 0 && (
+      {index !== 0 && showLine && (
         <div
           className={clsx(
             "absolute h-12 border-l left-1/2 transform -translate-x-1/2 -top-12",
