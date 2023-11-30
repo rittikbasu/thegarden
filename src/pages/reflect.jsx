@@ -3,7 +3,6 @@ import { createClient } from "@supabase/supabase-js";
 import Calendar from "react-github-contribution-calendar";
 
 const Reflect = ({ totalPosts, postsThisMonth, postsPerDay }) => {
-  console.log(postsPerDay);
   const panelColors = [
     "rgba(63, 63, 70, 0.4)",
     "#F78A23",
@@ -27,9 +26,9 @@ const Reflect = ({ totalPosts, postsThisMonth, postsPerDay }) => {
   ];
   const weekLabelAttributes = {
     style: {
-      "font-size": 10,
+      fontSize: 10,
       fill: "#aaaaaa",
-      "alignment-baseline": "central",
+      alignmentBaseline: "central",
     },
   };
   const weekNames = ["", "m", "", "w", "", "f", ""];
