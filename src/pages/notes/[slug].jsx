@@ -84,7 +84,7 @@ export default function NotePage({ note = { text: "" }, previousPath }) {
             placeholder="what's are you thinking?"
             style={{ wordSpacing: "0.2em" }}
           >
-            text
+            {text}
           </div>
           <div className="flex justify-end pr-2 pt-2">
             <button className="text-red-500">delete</button>
