@@ -19,7 +19,7 @@ function Tab() {
   }, [router.asPath]);
 
   return (
-    <div className="flex justify-between mb-6 border border-zinc-700 rounded-xl">
+    <div className="flex justify-between mb-6 lg:mb-10 border border-zinc-700 rounded-xl">
       <Link
         href="/"
         className={clsx(
