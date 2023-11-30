@@ -65,5 +65,6 @@ export async function getStaticProps() {
     props: {
       notes: data,
     },
+    revalidate: 1,
   };
 }
