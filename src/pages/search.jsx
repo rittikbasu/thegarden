@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import clsx from "clsx";
 import { LuSparkles } from "react-icons/lu";
+import { IoSearchOutline } from "react-icons/io5";
 
 const Search = ({ notes, onSearch }) => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -30,35 +31,31 @@ const Search = ({ notes, onSearch }) => {
         <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
       </label>
 
-      <div
-        className={clsx(
-          aiToggle === true ? "px-2" : "px-8",
-          "fixed bottom-0 w-full pb-4 transition-all duration-700 inset-x-0 flex justify-center"
-        )}
-      >
+      <div className="fixed bottom-0 w-full pb-4 px-8 inset-x-0 flex justify-center">
         <div
           className={clsx(
             aiToggle === true
               ? "border-blue-500/80 shadow-blue-500/50"
               : "border-zinc-500/60 shadow-zinc-500/40",
-            "p-2 w-full max-w-lg rounded-xl transition duration-700 shadow-lg bg-zinc-900/60 border"
+            "p-2 w-full max-w-lg rounded-xl transition duration-700 shadow-lg bg-zinc-900/60 border flex justify-between items-center"
           )}
         >
           <input
             type="text"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className={clsx(
-              "bg-transparent w-full focus:outline-none px-4 placeholder:text-center"
-            )}
-            placeholder="what are you looking for?"
+            className="bg-transparent flex-grow focus:outline-none px-4 placeholder:text-center"
+            placeholder={
+              aiToggle
+                ? "ask me all about your notes"
+                : "which note are you looking for?"
+            }
           />
-          {/* <button
-          onClick={handleSearch}
-          className="absolute right-0 top-0 mt-2 mr-2"
-        >
-          Search
-        </button> */}
+          {aiToggle && (
+            <button className="mr-2 text-blue-400">
+              <IoSearchOutline />
+            </button>
+          )}
         </div>
       </div>
     </div>
