@@ -6,7 +6,7 @@ import Link from "next/link";
 const SUPABASE_URL = process.env.SUPABASE_URL;
 const SUPABASE_API_KEY = process.env.SUPABASE_API_KEY;
 
-export default function NotePage({ note, previousPath }) {
+export default function NotePage({ note = { text: "" }, previousPath }) {
   const [text, setText] = useState(note.text);
   const [isEditing, setIsEditing] = useState(false);
   const [editedNote, setEditedNote] = useState(note.text);
@@ -84,7 +84,7 @@ export default function NotePage({ note, previousPath }) {
             placeholder="what's are you thinking?"
             style={{ wordSpacing: "0.2em" }}
           >
-            {note && text ? text : ""}
+            text
           </div>
           <div className="flex justify-end pr-2 pt-2">
             <button className="text-red-500">delete</button>
