@@ -44,7 +44,7 @@ const Search = ({ notes, onSearch }) => {
             type="text"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="bg-transparent flex-grow focus:outline-none px-4 placeholder:text-center"
+            className="bg-transparent flex-grow flex justify-center items-center focus:outline-none px-4 placeholder:text-center"
             placeholder={
               aiToggle
                 ? "ask me all about your notes"
