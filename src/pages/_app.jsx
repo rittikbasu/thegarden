@@ -4,7 +4,9 @@ import Header from "@/components/Header";
 import Tab from "@/components/Tab";
 import Particles from "@/components/Particles";
 import "@/styles/globals.css";
-import { Poppins, Work_Sans } from "@next/font/google";
+import { Poppins, Work_Sans } from "next/font/google";
+import favicon from "../../public/icon.png";
+import Head from "next/head";
 
 const poppins = Poppins({
   display: "swap",
@@ -39,6 +41,9 @@ export default function App({ Component, pageProps }) {
     <div
       className={`max-w-lg mx-auto px-8 ${poppins.variable} ${workSans.variable} font-sans`}
     >
+      <Head>
+        <link rel="icon" href={favicon.src} />
+      </Head>
       <Particles
         className="absolute inset-0 -z-10 animate-fade-in"
         quantity={200}
