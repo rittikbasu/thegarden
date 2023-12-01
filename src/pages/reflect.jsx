@@ -40,7 +40,7 @@ const Reflect = ({ totalPosts, postsThisMonth, postsPerDay }) => {
       <div className="mt-4 mb-2">
         <Calendar
           values={postsPerDay}
-          until="2023-12-31"
+          until={new Date().toISOString().split("T")[0]}
           panelColors={panelColors}
           monthNames={monthNames}
           weekNames={weekNames}
@@ -74,7 +74,7 @@ export async function getStaticProps() {
     postsPerDay[day]++;
   });
 
-  const currentMonth = new Date().getMonth() + 1;
+  const currentMonth = new Date().getMonth();
   const postsThisMonth = data.filter((post) => {
     const postMonth = new Date(post.created_at).getMonth() + 1;
     return postMonth === currentMonth;
