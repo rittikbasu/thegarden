@@ -8,7 +8,7 @@ import { formatNotes } from "@/utils/formatNotes";
 export default function Home({ data, length }) {
   const [notes, setNotes] = useState(data);
   const [loading, setLoading] = useState(false);
-  const [page, setPage] = useState(0);
+  const [showBackToTopBtn, setShowBackToTopBtn] = useState(false);
 
   const lastNoteRef = useRef(null);
 
@@ -28,23 +28,17 @@ export default function Home({ data, length }) {
     setLoading(false);
   };
 
+  const scrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  };
+
   useEffect(() => {
     if (notes.length >= length) {
       return;
     }
-
-    const fetchMoreNotes = async () => {
-      setLoading(true);
-      const startRange = notes.length;
-      const endRange = startRange + NOTES_PER_PAGE - 1;
-      const response = await fetch(
-        `/api/fetchNotes?start=${startRange}&end=${endRange}`
-      );
-      const newNotes = await response.json();
-      setNotes((prevNotes) => [...prevNotes, ...newNotes]);
-      setLoading(false);
-    };
-
     const handleScroll = () => {
       if (lastNoteRef.current) {
         const rect = lastNoteRef.current.getBoundingClientRect();
@@ -52,23 +46,46 @@ export default function Home({ data, length }) {
           rect.bottom <= window.innerHeight && rect.top >= 0;
 
         if (isLastNoteVisible) {
-          console.log("Last note is visible");
           if (!loading) {
             fetchMoreNotes();
           }
         }
       }
+
+      if (window.scrollY > 300) {
+        setShowBackToTopBtn(true);
+      } else {
+        setShowBackToTopBtn(false);
+      }
     };
 
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
-  }, [loading, notes.length, length]);
+  });
 
   return (
     <div className="text-gray-200">
       <Head>
         <title>the garden</title>
       </Head>
+      {showBackToTopBtn && (
+        <>
+          <button
+            onClick={scrollToTop}
+            className="fixed lg:hidden bottom-4 right-8 z-10 text-blue-500 border border-blue-500 backdrop-blur-sm font-bold py-2 px-4 rounded-full"
+            title="Back to top"
+          >
+            ↑
+          </button>
+          <button
+            onClick={scrollToTop}
+            className="hidden lg:block fixed bottom-10 right-[34rem] z-10 text-blue-500 border border-blue-500 backdrop-blur-sm font-bold py-2 px-4 rounded-xl"
+            title="Back to top"
+          >
+            back to top
+          </button>
+        </>
+      )}
       <div className="pb-8">
         {notes.map((note, index) => (
           <div
