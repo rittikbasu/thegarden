@@ -3,6 +3,7 @@ import { useState, useEffect, useRef } from "react";
 import clsx from "clsx";
 import Note from "@/components/Note";
 import { createClient } from "@supabase/supabase-js";
+import { IoIosArrowUp } from "react-icons/io";
 import { formatNotes } from "@/utils/formatNotes";
 
 export default function Home({ data, length }) {
@@ -79,10 +80,10 @@ export default function Home({ data, length }) {
           </button>
           <button
             onClick={scrollToTop}
-            className="hidden lg:block fixed bottom-10 right-[34rem] z-10 text-blue-500 border border-blue-500 backdrop-blur-sm font-bold py-2 px-4 rounded-xl"
+            className="hidden lg:block fixed bottom-10 md:right-1/4 xl:right-1/3 transform translate-x-1/2 max-w-lg z-10 text-blue-500 border border-blue-500 backdrop-blur-sm font-bold py-1.5 px-4 rounded-xl"
             title="Back to top"
           >
-            back to top
+            <IoIosArrowUp className="inline-block w-4 h-4 mr-0.5" /> top
           </button>
         </>
       )}
