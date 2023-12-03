@@ -52,7 +52,7 @@ const Post = ({ previousPath }) => {
     setImages((prevImages) => prevImages.filter((_, i) => i !== index));
   };
 
-  const handlePost = async () => {
+  const handleSubmit = async () => {
     if (!text) return;
     setPosting(true);
 
@@ -145,9 +145,9 @@ const Post = ({ previousPath }) => {
                     URL.revokeObjectURL(imageUrl);
                     handleDelete(index);
                   }}
-                  className="absolute -top-2 -right-2"
+                  className="absolute -top-3 -right-3"
                 >
-                  <IoMdCloseCircle className="w-4 h-4 fill-red-500" />
+                  <IoMdCloseCircle className="w-6 h-6 fill-red-500 bg-zinc-900 rounded-full" />
                 </button>
               </div>
             ))}
@@ -178,7 +178,7 @@ const Post = ({ previousPath }) => {
         ) : (
           <button
             className="text-blue-400 rounded-md"
-            onClick={handlePost}
+            onClick={handleSubmit}
             disabled={posting}
           >
             <div className="flex items-center justify-center">
