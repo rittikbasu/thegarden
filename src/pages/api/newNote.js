@@ -39,11 +39,6 @@ async function uploadImages(files) {
 }
 
 export default async function handler(req, res) {
-  if (req.method !== "POST") {
-    res.setHeader("Allow", ["POST"]);
-    return res.status(405).end(`Method ${req.method} Not Allowed`);
-  }
-
   try {
     const form = new IncomingForm();
     const { fields, files } = await new Promise((resolve, reject) => {
