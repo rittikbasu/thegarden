@@ -202,5 +202,6 @@ export const getStaticProps = async (context) => {
     props: {
       note: data[0],
     },
+    revalidate: 1,
   };
 };
