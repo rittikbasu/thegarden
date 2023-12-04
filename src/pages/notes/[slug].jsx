@@ -1,8 +1,10 @@
 import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { useRouter } from "next/router";
 import { createClient } from "@supabase/supabase-js";
 import Spinner from "@/components/Spinner";
+import DeleteModal from "@/components/DeleteModal";
 import { IoAddOutline } from "react-icons/io5";
 import { HiArrowLongLeft } from "react-icons/hi2";
 import { IoMdCloseCircle } from "react-icons/io";
@@ -16,6 +18,8 @@ export default function NotePage({ note = { text: "" }, previousPath }) {
   const [isEditing, setIsEditing] = useState(false);
   const [editedNote, setEditedNote] = useState(note.text);
   const [saving, setSaving] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const router = useRouter();
 
   const handleEdit = () => setIsEditing(true);
 
@@ -25,6 +29,32 @@ export default function NotePage({ note = { text: "" }, previousPath }) {
     const val = event.target.value;
     event.target.value = "";
     event.target.value = val;
+  }
+
+  function handleDelete() {
+    setShowModal(true);
+  }
+
+  async function handleConfirmDelete() {
+    const response = await fetch("/api/deleteNote", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        id: note.id,
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error(`Error: ${response.statusText}`);
+    }
+    router.push("/");
+    setShowModal(false);
+  }
+
+  function handleCloseModal() {
+    setShowModal(false);
   }
 
   async function handleSave() {
@@ -149,8 +179,15 @@ export default function NotePage({ note = { text: "" }, previousPath }) {
         )}
       </div>
       <div className="flex justify-end px-2 pt-2">
-        <button className="text-red-500">delete</button>
+        <button className="text-red-500" onClick={handleDelete}>
+          delete
+        </button>
       </div>
+      <DeleteModal
+        isOpen={showModal}
+        onDelete={handleConfirmDelete}
+        onClose={handleCloseModal}
+      />
     </div>
   );
 }
