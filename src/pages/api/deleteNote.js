@@ -7,7 +7,6 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_API_KEY);
 export default async function handler(req, res) {
   if (req.method === "POST") {
     const { id } = req.body;
-    console.log("id", id);
 
     const { data, error } = await supabase
       .from("thegarden_notes")
