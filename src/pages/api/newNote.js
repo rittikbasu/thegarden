@@ -11,12 +11,6 @@ const IMAGEKIT_URL = process.env.IMAGEKIT_URL;
 const IMAGEKIT_PUBLIC_KEY = process.env.IMAGEKIT_PUBLIC_KEY;
 const IMAGEKIT_PRIVATE_KEY = process.env.IMAGEKIT_PRIVATE_KEY;
 
-const imagekit = new ImageKit({
-  publicKey: IMAGEKIT_PUBLIC_KEY,
-  privateKey: IMAGEKIT_PRIVATE_KEY,
-  urlEndpoint: IMAGEKIT_URL,
-});
-
 export const config = {
   api: {
     bodyParser: false,
@@ -24,6 +18,12 @@ export const config = {
 };
 
 async function uploadImages(files) {
+  const imagekit = new ImageKit({
+    publicKey: IMAGEKIT_PUBLIC_KEY,
+    privateKey: IMAGEKIT_PRIVATE_KEY,
+    urlEndpoint: IMAGEKIT_URL,
+  });
+
   const imageUploadPromises = Object.keys(files).map(async (key, index) => {
     const file = files[key][0];
     const buffer = await fs.readFile(file.filepath);
