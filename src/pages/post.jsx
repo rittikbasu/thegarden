@@ -64,7 +64,7 @@ const Post = ({ previousPath }) => {
 
     try {
       const response = await fetch("/api/newNote", {
-        // method: "POST",
+        method: "POST",
         body: formData,
       });
 
