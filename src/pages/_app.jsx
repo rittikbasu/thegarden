@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import Header from "@/components/Header";
+import Link from "next/link";
 import Tab from "@/components/Tab";
 import Particles from "@/components/Particles";
 import "@/styles/globals.css";
@@ -47,11 +48,20 @@ export default function App({ Component, pageProps }) {
       <Particles
         className="absolute inset-0 -z-10 animate-fade-in"
         quantity={200}
+        // key={router.pathname}
       />
       {router.pathname !== "/post" && !router.pathname.startsWith("/notes") && (
         <>
           <Header />
           <Tab />
+          <div className="fixed bottom-4 lg:bottom-8 left-1/2 transform -translate-x-1/2 w-full max-w-lg px-12 z-50">
+            <Link href="/post" passHref>
+              <div className="w-full p-2 backdrop-blur-md rounded-full border-2 border-orange-500 text-center tracking-widest focus:outline-none text-zinc-400">
+                what are you thinking?
+                <span className=" animate-cursorblink">|</span>
+              </div>
+            </Link>
+          </div>
         </>
       )}
       <Component {...pageProps} previousPath={previousPath} />
