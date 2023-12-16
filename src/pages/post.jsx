@@ -4,7 +4,11 @@ import { useRouter } from "next/router";
 import Link from "next/link";
 import Image from "next/image";
 import clsx from "clsx";
+import ShortUniqueId from "short-unique-id";
+
 import Spinner from "@/components/Spinner";
+import { db } from "@/utils/db";
+
 import { IoAddOutline } from "react-icons/io5";
 import { HiArrowLongRight } from "react-icons/hi2";
 import { HiArrowLongLeft } from "react-icons/hi2";
@@ -43,6 +47,7 @@ const Post = ({ previousPath }) => {
 
   useEffect(() => {
     const imageUrls = images.map((image) => URL.createObjectURL(image));
+    console.log(imageUrls);
     return () => imageUrls.forEach(URL.revokeObjectURL);
   }, [images]);
 
@@ -66,20 +71,18 @@ const Post = ({ previousPath }) => {
   const handleSubmit = async () => {
     if (!text) return;
     setPosting(true);
-
-    const formData = new FormData();
-    formData.append("text", text);
-    images.forEach((image, index) =>
-      formData.append(`images[${index}]`, image)
-    );
+    console.log(text, images);
+    const uid = new ShortUniqueId({ length: 10 });
 
     try {
-      const response = await fetch("/api/newNote", {
-        method: "POST",
-        body: formData,
+      await db.notes.add({
+        id: uid.rnd(),
+        created_at: new Date().toISOString(),
+        text: text,
+        images: images,
+        // upload: false,
+        // sync: false,
       });
-
-      if (!response.ok) throw new Error(`Error: ${response.statusText}`);
       router.push("/");
     } catch (error) {
       console.error("Failed to send note to API:", error);
