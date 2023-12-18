@@ -18,7 +18,7 @@ const Note = ({ id, date, time, content, index, prevDate, nextDate }) => {
           )}
         ></div>
       )}
-      <Link href={`/notes/${id}`} passHref>
+      <Link href={`/note?id=${id}`} passHref>
         <div className="flex items-center">
           <div className="bg-zinc-900/80 border border-zinc-800/60 rounded-3xl w-full">
             <div className="p-4 text-white text-sm">
@@ -30,12 +30,12 @@ const Note = ({ id, date, time, content, index, prevDate, nextDate }) => {
             <>
               {date !== prevDate && (
                 <div className="flex items-center justify-center">
-                  <div className="bg-orange-500 h-4 w-4 rounded-full absolute bottom-6 z-50"></div>
+                  <div className="bg-orange-500 h-4 w-4 rounded-full absolute bottom-6 z-40"></div>
                 </div>
               )}
               {date === prevDate && date !== nextDate && (
                 <div className="flex items-center justify-center">
-                  <div className="bg-orange-500 h-4 w-4 rounded-full absolute bottom-6 z-50"></div>
+                  <div className="bg-orange-500 h-4 w-4 rounded-full absolute bottom-6 z-40"></div>
                 </div>
               )}
             </>

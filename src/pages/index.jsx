@@ -2,14 +2,13 @@ import Head from "next/head";
 import { useState, useEffect, useRef } from "react";
 import clsx from "clsx";
 import Note from "@/components/Note";
-import { createClient } from "@supabase/supabase-js";
 import { IoIosArrowUp } from "react-icons/io";
-import { FaArrowUp } from "react-icons/fa6";
 import { formatNotes } from "@/utils/formatNotes";
 import Spinner from "@/components/Spinner";
+import { db } from "@/utils/db";
 
-export default function Home({ data, length }) {
-  const [notes, setNotes] = useState(data);
+export default function Home() {
+  const [notes, setNotes] = useState([]);
   const [loading, setLoading] = useState(false);
   const [showBackToTopBtn, setShowBackToTopBtn] = useState(false);
 
@@ -17,19 +16,15 @@ export default function Home({ data, length }) {
 
   const NOTES_PER_PAGE = 20;
 
-  const fetchMoreNotes = async () => {
-    setLoading(true);
-    const startRange = notes.length;
-    const endRange = startRange + NOTES_PER_PAGE - 1;
-    console.log("startRange", startRange);
-    console.log("endRange", endRange);
-    const response = await fetch(
-      `/api/fetchNotes?start=${startRange}&end=${endRange}`
-    );
-    const newNotes = await response.json();
-    setNotes([...notes, ...newNotes]);
-    setLoading(false);
+  const getData = async () => {
+    const result = await db.notes.orderBy("created_at").reverse().toArray();
+    console.log(result, result[1]);
+    setNotes(formatNotes(result));
   };
+
+  useEffect(() => {
+    getData();
+  }, []);
 
   const scrollToTop = () => {
     window.scrollTo({
@@ -39,22 +34,10 @@ export default function Home({ data, length }) {
   };
 
   useEffect(() => {
-    if (notes.length >= length) {
+    if (notes.length === 0) {
       return;
     }
     const handleScroll = () => {
-      if (lastNoteRef.current) {
-        const rect = lastNoteRef.current.getBoundingClientRect();
-        const isLastNoteVisible =
-          rect.bottom <= window.innerHeight && rect.top >= 0;
-
-        if (isLastNoteVisible) {
-          if (!loading) {
-            fetchMoreNotes();
-          }
-        }
-      }
-
       if (window.scrollY > 300) {
         setShowBackToTopBtn(true);
       } else {
@@ -75,21 +58,14 @@ export default function Home({ data, length }) {
         <>
           <button
             onClick={scrollToTop}
-            className="fixed lg:hidden bottom-6 right-3 z-50 text-blue-500 rounded-full"
+            className="fixed flex items-center justify-center bg-white top-8 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50 rounded-full"
             title="Back to top"
           >
-            <FaArrowUp className="w-7 h-7" />
-          </button>
-          <button
-            onClick={scrollToTop}
-            className="hidden lg:block fixed bottom-8 md:right-1/4 xl:right-1/3 transform translate-x-1/2 max-w-lg z-10 text-blue-500 border border-blue-500 backdrop-blur-sm font-bold py-1.5 px-4 rounded-xl"
-            title="Back to top"
-          >
-            <IoIosArrowUp className="inline-block w-4 h-4 mr-0.5" /> top
+            <IoIosArrowUp className="w-10 h-10 p-1 fill-zinc-700" />
           </button>
         </>
       )}
-      <div className="pb-8">
+      <div className="pb-12">
         {notes.map((note, index) => (
           <div
             key={note.id}
@@ -117,33 +93,4 @@ export default function Home({ data, length }) {
       </div>
     </div>
   );
-}
-
-export async function getStaticProps() {
-  const SUPABASE_URL = process.env.SUPABASE_URL;
-  const SUPABASE_API_KEY = process.env.SUPABASE_API_KEY;
-  const supabase = createClient(SUPABASE_URL, SUPABASE_API_KEY);
-  const { data } = await supabase
-    .from("thegarden_notes")
-    .select("created_at, text, id")
-    .order("created_at", { ascending: false })
-    .range(0, 19);
-
-  const formattedNotes = formatNotes(data);
-
-  const { data: datesData, error: datesError } = await supabase
-    .from("thegarden_notes")
-    .select("created_at");
-
-  if (datesError) throw datesError;
-
-  const length = datesData.length;
-
-  return {
-    props: {
-      data: formattedNotes,
-      length,
-    },
-    revalidate: 1,
-  };
 }

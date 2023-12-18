@@ -5,7 +5,6 @@ import { useRouter } from "next/router";
 
 import { db } from "@/utils/db";
 import { formatNotes } from "@/utils/formatNotes";
-import Spinner from "@/components/Spinner";
 import DeleteModal from "@/components/DeleteModal";
 
 import { IoAddOutline } from "react-icons/io5";
@@ -15,14 +14,13 @@ import { IoMdCloseCircle } from "react-icons/io";
 export default function NotePage({ previousPath }) {
   const router = useRouter();
   const { id } = router.query;
-  console.log(id);
   const [text, setText] = useState("");
+  const [editedNote, setEditedNote] = useState("");
   const [images, setImages] = useState([]);
+  const [editedImages, setEditedImages] = useState(images);
   const [date, setDate] = useState("");
   const [time, setTime] = useState("");
   const [isEditing, setIsEditing] = useState(false);
-  const [editedNote, setEditedNote] = useState("");
-  const [saving, setSaving] = useState(false);
   const [showModal, setShowModal] = useState(false);
 
   async function fetchNoteData(id) {
@@ -67,19 +65,7 @@ export default function NotePage({ previousPath }) {
   }
 
   async function handleConfirmDelete() {
-    const response = await fetch("/api/deleteNote", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        id: note.id,
-      }),
-    });
-
-    if (!response.ok) {
-      throw new Error(`Error: ${response.statusText}`);
-    }
+    await db.notes.delete(id);
     router.push("/");
     setShowModal(false);
   }
@@ -89,12 +75,12 @@ export default function NotePage({ previousPath }) {
   }
 
   async function handleSave() {
-    if (text !== editedNote) {
-      setSaving(true);
+    if (text !== editedNote || images !== editedImages) {
       try {
         await db.notes
           .update(id, {
             text: editedNote,
+            images: editedImages,
           })
           .then((updated) => {
             if (updated) {
@@ -103,7 +89,6 @@ export default function NotePage({ previousPath }) {
               console.log(`Note ${id} not found`);
             }
           });
-        setSaving(false);
         setIsEditing(false);
         setText(editedNote);
       } catch (error) {
@@ -137,13 +122,9 @@ export default function NotePage({ previousPath }) {
           </Link>
         )}
         {isEditing ? (
-          !saving ? (
-            <button className="text-blue-400" onClick={handleSave}>
-              {text === editedNote ? "done" : "save"}
-            </button>
-          ) : (
-            <Spinner svgClassName="w-6 h-6 fill-blue-500" />
-          )
+          <button className="text-blue-400" onClick={handleSave}>
+            {text === editedNote ? "done" : "save"}
+          </button>
         ) : (
           <button className="text-blue-400" onClick={handleEdit}>
             edit
@@ -172,12 +153,11 @@ export default function NotePage({ previousPath }) {
             className="bg-transparent resize-none flex-1 w-full focus:outline-none p-4"
             placeholder="what's are you thinking?"
             style={{ wordSpacing: "0.2em" }}
-            disabled={saving}
           ></textarea>
         )}
         {images && images.length !== 0 && (
           <div className="flex flex-wrap gap-x-4 px-4 pt-4 pb-2">
-            {images.map((image, index) => (
+            {editedImages.map((image, index) => (
               <div key={index} className="relative">
                 <Image
                   src={image}
@@ -189,14 +169,13 @@ export default function NotePage({ previousPath }) {
                 {isEditing && (
                   <button
                     onClick={() => {
-                      setImages((prevImages) => {
+                      setEditedImages((prevImages) => {
                         const newImages = [...prevImages];
                         newImages.splice(index, 1);
                         return newImages;
                       });
                     }}
                     className="absolute -top-3 -right-3"
-                    disabled={saving}
                   >
                     <IoMdCloseCircle className="w-6 h-6 fill-red-500 bg-zinc-900 rounded-full" />
                   </button>
@@ -219,54 +198,3 @@ export default function NotePage({ previousPath }) {
     </div>
   );
 }
-
-// export const getStaticPaths = async () => {
-//   const supabase = createClient(SUPABASE_URL, SUPABASE_API_KEY);
-//   const { data, error } = await supabase.from("thegarden_notes").select("id");
-//   return {
-//     paths: data.map((note) => ({
-//       params: {
-//         slug: note.id.toString(),
-//       },
-//     })),
-//     fallback: true,
-//   };
-// };
-
-// export const getStaticProps = async (context) => {
-//   const { slug } = context.params;
-//   const supabase = createClient(SUPABASE_URL, SUPABASE_API_KEY);
-//   const { data, error } = await supabase
-//     .from("thegarden_notes")
-//     .select("*")
-//     .eq("id", slug);
-
-//   if (error) {
-//     console.error("Error fetching journal data:", error);
-//     return {
-//       props: {
-//         note: [],
-//       },
-//     };
-//   }
-
-//   const timestamp = new Date(data[0].created_at);
-//   data[0].date = timestamp.toLocaleDateString("en-US", {
-//     weekday: "short",
-//     year: "numeric",
-//     month: "short",
-//     day: "numeric",
-//   });
-//   data[0].time = timestamp.toLocaleTimeString("en-US", {
-//     hour: "numeric",
-//     minute: "2-digit",
-//     hour12: true,
-//   });
-
-//   return {
-//     props: {
-//       note: data[0],
-//     },
-//     revalidate: 1,
-//   };
-// };

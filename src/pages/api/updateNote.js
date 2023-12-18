@@ -18,6 +18,7 @@ export default async function handler(req, res) {
     }
 
     try {
+      await res.revalidate(`/`);
       await res.revalidate(`/notes/${id}`);
     } catch (error) {
       console.log(error);
