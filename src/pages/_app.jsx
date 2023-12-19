@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 
 import Header from "@/components/Header";
-import Tab from "@/components/Tab";
+import Navbar from "@/components/Navbar";
 import Particles from "@/components/Particles";
 import { fetchAndStoreData, db } from "@/utils/db";
 
@@ -65,8 +65,8 @@ export default function App({ Component, pageProps }) {
         !router.pathname.startsWith("/notes") &&
         !router.pathname.startsWith("/note") && (
           <>
-            <Header />
-            <Tab />
+            <Header path={router.pathname} />
+            <Navbar path={router.pathname} />
             <div className="fixed bottom-20 right-4 z-50 md:right-1/4 xl:right-1/3 max-w-xl">
               <Link href="/post" passHref>
                 <div className="w-14 h-14 flex items-center justify-center rounded-full bg-orange-600">
