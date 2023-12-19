@@ -76,7 +76,7 @@ const Post = ({ previousPath }) => {
     }
   };
   return (
-    <div className="flex flex-col h-screen">
+    <div className="flex flex-col h-screen pb-4">
       <Head>
         <title>post - the garden</title>
         <meta
@@ -84,7 +84,7 @@ const Post = ({ previousPath }) => {
           content="initial-scale=1, maximum-scale=1, user-scalable=no"
         />
       </Head>
-      <div className="flex items-center justify-between gap-x-4 pt-6 pb-2">
+      <div className="flex items-center justify-between pt-6 pb-4">
         <Link href={linkPath} passHref>
           <div
             className={clsx("flex items-center justify-center text-orange-500")}
@@ -111,6 +111,12 @@ const Post = ({ previousPath }) => {
               className="hidden focus:outline-none outline-none"
               ref={fileInputRef}
             />
+          </div>
+        </button>
+        <button className="text-blue-400 rounded-md" onClick={handleSubmit}>
+          <div className="flex items-center justify-center">
+            <span>post</span>
+            <HiArrowLongRight className="w-6 h-6 ml-2" />
           </div>
         </button>
       </div>
@@ -151,14 +157,6 @@ const Post = ({ previousPath }) => {
             ))}
           </div>
         )}
-      </div>
-      <div className="flex items-center justify-end py-2">
-        <button className="text-blue-400 rounded-md" onClick={handleSubmit}>
-          <div className="flex items-center justify-center">
-            <span>post</span>
-            <HiArrowLongRight className="w-6 h-6 ml-2" />
-          </div>
-        </button>
       </div>
     </div>
   );

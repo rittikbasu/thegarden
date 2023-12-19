@@ -11,6 +11,8 @@ import DeleteModal from "@/components/DeleteModal";
 import { IoAddOutline } from "react-icons/io5";
 import { HiArrowLongLeft } from "react-icons/hi2";
 import { IoMdCloseCircle } from "react-icons/io";
+import { AiFillEdit } from "react-icons/ai";
+import { MdOutlineFileDownloadDone } from "react-icons/md";
 
 export default function NotePage({ previousPath }) {
   const router = useRouter();
@@ -84,6 +86,8 @@ export default function NotePage({ previousPath }) {
   function handleCancel() {
     setEditedNote(text);
     setImageUrls(createImageUrls(images));
+    setEditedImages(images);
+    setIsEditing(false);
   }
 
   async function handleSave() {
@@ -133,13 +137,26 @@ export default function NotePage({ previousPath }) {
             </div>
           </Link>
         )}
+        <div className="flex justify-center items-center">
+          <button
+            className="text-red-500"
+            onClick={isEditing ? handleCancel : handleDelete}
+          >
+            {isEditing ? "cancel" : "delete"}
+          </button>
+        </div>
         {isEditing ? (
-          <button className="text-blue-400" onClick={handleSave}>
-            {text === editedNote ? "done" : "save"}
+          <button
+            className="text-blue-400 flex items-center"
+            onClick={handleSave}
+          >
+            done
+            <MdOutlineFileDownloadDone className="inline-block w-5 h-5 ml-2" />
           </button>
         ) : (
           <button className="text-blue-400" onClick={handleEdit}>
             edit
+            <AiFillEdit className="inline-block w-5 h-5 ml-2" />
           </button>
         )}
       </div>
@@ -190,11 +207,6 @@ export default function NotePage({ previousPath }) {
             ))}
           </div>
         )}
-      </div>
-      <div className="flex justify-end px-2 pt-2">
-        <button className="text-red-500" onClick={handleDelete}>
-          {isEditing ? "cancel" : "delete"}
-        </button>
       </div>
       <DeleteModal
         isOpen={showModal}
