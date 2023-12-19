@@ -5,6 +5,7 @@ import { useRouter } from "next/router";
 
 import { db } from "@/utils/db";
 import { formatNotes } from "@/utils/formatNotes";
+import { createImageUrls } from "@/utils/imageTransforms";
 import DeleteModal from "@/components/DeleteModal";
 
 import { IoAddOutline } from "react-icons/io5";
@@ -17,7 +18,8 @@ export default function NotePage({ previousPath }) {
   const [text, setText] = useState("");
   const [editedNote, setEditedNote] = useState("");
   const [images, setImages] = useState([]);
-  const [editedImages, setEditedImages] = useState(images);
+  const [imageUrls, setImageUrls] = useState([]);
+  const [editedImages, setEditedImages] = useState([]);
   const [date, setDate] = useState("");
   const [time, setTime] = useState("");
   const [isEditing, setIsEditing] = useState(false);
@@ -26,22 +28,14 @@ export default function NotePage({ previousPath }) {
   async function fetchNoteData(id) {
     const result = await db.notes.get(id);
     const data = formatNotes([result])[0];
-    const newImages = [];
-
-    data.images?.forEach((image) => {
-      if (image.thumbnailUrl) {
-        newImages.push(image.thumbnailUrl);
-      } else {
-        const blob = new Blob([image], { type: image.type });
-        const imageUrl = URL.createObjectURL(blob);
-        newImages.push(imageUrl);
-      }
-    });
-    setImages(newImages);
+    const blobUrls = createImageUrls(data.images);
+    setImages(data.images);
+    setImageUrls(blobUrls);
     setText(data.text);
     setDate(data.date);
     setTime(data.time);
     setEditedNote(data.text);
+    setEditedImages(data.images);
   }
 
   useEffect(() => {
@@ -60,6 +54,19 @@ export default function NotePage({ previousPath }) {
     event.target.value = val;
   }
 
+  function handleImageDelete(index) {
+    setImageUrls((prevImages) => {
+      const newImages = [...prevImages];
+      newImages.splice(index, 1);
+      return newImages;
+    });
+    setEditedImages((prevImages) => {
+      const newImages = [...prevImages];
+      newImages.splice(index, 1);
+      return newImages;
+    });
+  }
+
   function handleDelete() {
     setShowModal(true);
   }
@@ -72,6 +79,11 @@ export default function NotePage({ previousPath }) {
 
   function handleCloseModal() {
     setShowModal(false);
+  }
+
+  function handleCancel() {
+    setEditedNote(text);
+    setImageUrls(createImageUrls(images));
   }
 
   async function handleSave() {
@@ -155,9 +167,9 @@ export default function NotePage({ previousPath }) {
             style={{ wordSpacing: "0.2em" }}
           ></textarea>
         )}
-        {images && images.length !== 0 && (
+        {imageUrls && imageUrls.length !== 0 && (
           <div className="flex flex-wrap gap-x-4 px-4 pt-4 pb-2">
-            {editedImages.map((image, index) => (
+            {imageUrls.map((image, index) => (
               <div key={index} className="relative">
                 <Image
                   src={image}
@@ -168,13 +180,7 @@ export default function NotePage({ previousPath }) {
                 />
                 {isEditing && (
                   <button
-                    onClick={() => {
-                      setEditedImages((prevImages) => {
-                        const newImages = [...prevImages];
-                        newImages.splice(index, 1);
-                        return newImages;
-                      });
-                    }}
+                    onClick={() => handleImageDelete(index)}
                     className="absolute -top-3 -right-3"
                   >
                     <IoMdCloseCircle className="w-6 h-6 fill-red-500 bg-zinc-900 rounded-full" />
@@ -187,7 +193,7 @@ export default function NotePage({ previousPath }) {
       </div>
       <div className="flex justify-end px-2 pt-2">
         <button className="text-red-500" onClick={handleDelete}>
-          delete
+          {isEditing ? "cancel" : "delete"}
         </button>
       </div>
       <DeleteModal

@@ -6,7 +6,7 @@ import Image from "next/image";
 import clsx from "clsx";
 import ShortUniqueId from "short-unique-id";
 
-import Spinner from "@/components/Spinner";
+import { imageToBlob } from "@/utils/imageTransforms";
 import { db } from "@/utils/db";
 
 import { IoAddOutline } from "react-icons/io5";
@@ -21,7 +21,6 @@ const Post = ({ previousPath }) => {
     () => images.map((image) => URL.createObjectURL(image)),
     [images]
   );
-  const [posting, setPosting] = useState(false);
   const textAreaRef = useRef(null);
   const fileInputRef = useRef(null);
   const router = useRouter();
@@ -30,16 +29,6 @@ const Post = ({ previousPath }) => {
     previousPath && ["/search", "/", "/reflect"].includes(previousPath)
       ? previousPath
       : "/";
-
-  const BackButtonWrapper = ({ children, href }) => {
-    return posting ? (
-      <div>{children}</div>
-    ) : (
-      <Link href={href} passHref>
-        {children}
-      </Link>
-    );
-  };
 
   useEffect(() => {
     textAreaRef.current?.focus();
@@ -55,12 +44,13 @@ const Post = ({ previousPath }) => {
 
   const handleImageBtnClick = () => fileInputRef.current?.click();
 
-  const handleImageChange = (event) => {
+  const handleImageChange = async (event) => {
     if (event.target.files) {
-      setImages((prevImages) => [
-        ...prevImages,
-        ...Array.from(event.target.files),
-      ]);
+      console.log(event.target.files);
+      const files = Array.from(event.target.files);
+      const blobs = await Promise.all(files.map((file) => imageToBlob(file)));
+      console.log(blobs);
+      setImages((prevImages) => [...prevImages, ...blobs]);
     }
   };
 
@@ -70,7 +60,6 @@ const Post = ({ previousPath }) => {
 
   const handleSubmit = async () => {
     if (!text) return;
-    setPosting(true);
     console.log(text, images);
     const uid = new ShortUniqueId({ length: 10 });
 
@@ -80,14 +69,10 @@ const Post = ({ previousPath }) => {
         created_at: new Date().toISOString(),
         text: text,
         images: images,
-        // upload: false,
-        // sync: false,
       });
       router.push("/");
     } catch (error) {
       console.error("Failed to send note to API:", error);
-    } finally {
-      setPosting(false);
     }
   };
   return (
@@ -100,24 +85,20 @@ const Post = ({ previousPath }) => {
         />
       </Head>
       <div className="flex items-center justify-between gap-x-4 pt-6 pb-2">
-        <BackButtonWrapper href={linkPath}>
+        <Link href={linkPath} passHref>
           <div
-            className={clsx(
-              posting ? "text-orange-800" : "text-orange-500",
-              "flex items-center justify-center"
-            )}
+            className={clsx("flex items-center justify-center text-orange-500")}
           >
             <div className="flex items-center justify-center">
               <HiArrowLongLeft className="w-6 h-6 mr-2" />
               <span>back</span>
             </div>
           </div>
-        </BackButtonWrapper>
+        </Link>
         <button
           className="text-zinc-400 rounded-md"
           onClick={handleImageBtnClick}
           type="button"
-          disabled={posting}
         >
           <div className="flex items-center justify-center">
             <IoAddOutline className="w-5 h-5 mr-1" />
@@ -135,13 +116,11 @@ const Post = ({ previousPath }) => {
       </div>
       <div
         className={clsx(
-          posting && "animate-pulse",
           "flex-grow bg-zinc-900/80 border border-zinc-800/60 rounded-2xl flex flex-col"
         )}
       >
         <textarea
           value={text}
-          disabled={posting}
           onChange={handleTextChange}
           ref={textAreaRef}
           autoFocus
@@ -165,7 +144,6 @@ const Post = ({ previousPath }) => {
                     handleDelete(index);
                   }}
                   className="absolute -top-3 -right-3"
-                  disabled={posting}
                 >
                   <IoMdCloseCircle className="w-6 h-6 fill-red-500 bg-zinc-900 rounded-full" />
                 </button>
@@ -175,23 +153,12 @@ const Post = ({ previousPath }) => {
         )}
       </div>
       <div className="flex items-center justify-end py-2">
-        {posting ? (
-          <Spinner
-            containerClassName="mr-2"
-            svgClassName="w-6 h-6 fill-blue-500"
-          />
-        ) : (
-          <button
-            className="text-blue-400 rounded-md"
-            onClick={handleSubmit}
-            disabled={posting}
-          >
-            <div className="flex items-center justify-center">
-              <span>post</span>
-              <HiArrowLongRight className="w-6 h-6 ml-2" />
-            </div>
-          </button>
-        )}
+        <button className="text-blue-400 rounded-md" onClick={handleSubmit}>
+          <div className="flex items-center justify-center">
+            <span>post</span>
+            <HiArrowLongRight className="w-6 h-6 ml-2" />
+          </div>
+        </button>
       </div>
     </div>
   );
