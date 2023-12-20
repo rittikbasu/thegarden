@@ -7,6 +7,7 @@ import { db } from "@/utils/db";
 import { formatNotes } from "@/utils/formatNotes";
 import { createImageUrls, imageToBlob } from "@/utils/imageTransforms";
 import DeleteModal from "@/components/DeleteModal";
+import Carousel from "@/components/Carousel";
 
 import { IoAddOutline } from "react-icons/io5";
 import { HiArrowLongLeft } from "react-icons/hi2";
@@ -26,6 +27,8 @@ export default function NotePage({ previousPath }) {
   const [time, setTime] = useState("");
   const [isEditing, setIsEditing] = useState(false);
   const [showModal, setShowModal] = useState(false);
+  const [showCarousel, setShowCarousel] = useState(false);
+  const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const fileInputRef = useRef(null);
 
   async function fetchNoteData(id) {
@@ -98,6 +101,11 @@ export default function NotePage({ previousPath }) {
       return newImages;
     });
   }
+
+  const handleImageClick = (index) => {
+    setShowCarousel(true);
+    setSelectedImageIndex(index);
+  };
 
   function handleDelete() {
     setShowModal(true);
@@ -238,6 +246,7 @@ export default function NotePage({ previousPath }) {
                   height={64}
                   width={64}
                   className="w-12 h-12 md:w-16 md:h-16 object-cover rounded-lg border-zinc-800/60 border"
+                  onClick={isEditing ? null : () => handleImageClick(index)}
                 />
                 {isEditing && (
                   <button
@@ -249,6 +258,12 @@ export default function NotePage({ previousPath }) {
                 )}
               </div>
             ))}
+            <Carousel
+              isOpen={showCarousel}
+              images={imageUrls}
+              onClose={() => setShowCarousel(false)}
+              selectedImageIndex={selectedImageIndex}
+            />
           </div>
         )}
       </div>
