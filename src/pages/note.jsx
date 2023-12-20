@@ -1,11 +1,11 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/router";
 
 import { db } from "@/utils/db";
 import { formatNotes } from "@/utils/formatNotes";
-import { createImageUrls } from "@/utils/imageTransforms";
+import { createImageUrls, imageToBlob } from "@/utils/imageTransforms";
 import DeleteModal from "@/components/DeleteModal";
 
 import { IoAddOutline } from "react-icons/io5";
@@ -26,6 +26,7 @@ export default function NotePage({ previousPath }) {
   const [time, setTime] = useState("");
   const [isEditing, setIsEditing] = useState(false);
   const [showModal, setShowModal] = useState(false);
+  const fileInputRef = useRef(null);
 
   async function fetchNoteData(id) {
     const result = await db.notes.get(id);
@@ -55,6 +56,35 @@ export default function NotePage({ previousPath }) {
     event.target.value = "";
     event.target.value = val;
   }
+
+  const handleImageBtnClick = () => {
+    if (editedImages.length >= 4) {
+      alert("You can only add up to 4 images.");
+    } else {
+      fileInputRef.current?.click();
+    }
+  };
+
+  const handleImageChange = async (event) => {
+    if (event.target.files) {
+      const files = Array.from(event.target.files);
+      let images = files.filter((file) => file.type.startsWith("image/")); // Filter out non-image images
+
+      if (images.length === 0) {
+        alert("No images were selected.");
+        return;
+      }
+      const spaceForNewImages = 4 - editedImages.length;
+      if (images.length > spaceForNewImages) {
+        images = images.slice(0, spaceForNewImages);
+        alert("You can only add up to 4 images.");
+      }
+      const blobs = await Promise.all(images.map((file) => imageToBlob(file)));
+      const blobUrls = createImageUrls(blobs);
+      setEditedImages((prevImages) => [...prevImages, ...blobs]);
+      setImageUrls((prevImages) => [...prevImages, ...blobUrls]);
+    }
+  };
 
   function handleImageDelete(index) {
     setImageUrls((prevImages) => {
@@ -123,9 +153,23 @@ export default function NotePage({ previousPath }) {
     <div className="flex flex-col h-screen pb-4">
       <div className="flex items-center justify-between gap-x-4 pt-8 pb-2">
         {isEditing ? (
-          <button className="text-zinc-400">
-            <IoAddOutline className="inline-block w-5 h-5 mr-1" />
-            images
+          <button
+            className="text-zinc-400"
+            onClick={handleImageBtnClick}
+            type="button"
+          >
+            <div className="flex items-center justify-center">
+              <IoAddOutline className="w-5 h-5 mr-1" />
+              <span>images</span>
+              <input
+                type="file"
+                accept="image/*"
+                multiple
+                onChange={handleImageChange}
+                className="hidden focus:outline-none outline-none"
+                ref={fileInputRef}
+              />
+            </div>
           </button>
         ) : (
           <Link href={linkPath} passHref>
@@ -139,7 +183,7 @@ export default function NotePage({ previousPath }) {
         )}
         <div className="flex justify-center items-center">
           <button
-            className="text-red-500"
+            className="text-red-500/90"
             onClick={isEditing ? handleCancel : handleDelete}
           >
             {isEditing ? "cancel" : "delete"}
