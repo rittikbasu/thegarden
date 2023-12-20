@@ -8,12 +8,20 @@ const SUPABASE_API_KEY =
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_API_KEY);
 export const db = new Dexie("thegarden");
-db.version(1).stores({
-  notes: "id, created_at, text, images, upload, sync",
+db.version(2).stores({
+  notes: "id, created_at, text, images, operation, sync",
 });
 // Hook into the 'creating' event to set default values for new records
 db.notes.hook("creating", function (primaryKey, obj, transaction) {
   obj.sync = false;
+  obj.operation = "create";
+});
+
+db.transaction("rw", db.notes, async () => {
+  await db.notes.toCollection().modify((record) => {
+    record.sync = false;
+    record.operation = "create";
+  });
 });
 
 // Function to fetch data from Supabase and store it in IndexedDB
@@ -30,7 +38,8 @@ export async function fetchAndStoreData() {
   // Add 'upload' and 'sync' properties to each item with a default value of true
   const dataWithDefaults = supabaseData.map((item) => ({
     ...item,
-    sync: true,
+    sync: false,
+    operation: "create",
   }));
 
   // Store data in IndexedDB
