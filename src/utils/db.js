@@ -17,13 +17,6 @@ db.notes.hook("creating", function (primaryKey, obj, transaction) {
   obj.operation = "create";
 });
 
-db.transaction("rw", db.notes, async () => {
-  await db.notes.toCollection().modify((record) => {
-    record.sync = false;
-    record.operation = "create";
-  });
-});
-
 // Function to fetch data from Supabase and store it in IndexedDB
 export async function fetchAndStoreData() {
   const { data: supabaseData, error } = await supabase
