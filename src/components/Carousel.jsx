@@ -25,8 +25,8 @@ const Carousel = ({ isOpen, images, onClose, selectedImageIndex }) => {
   };
 
   return (
-    <div className="fixed top-0 left-0 px-4 w-full h-full flex items-center justify-center bg-black backdrop-blur-md bg-opacity-40 z-50">
-      <div className="bg-zinc-900/20 p-4 space-y-8 rounded-lg border border-zinc-800/70">
+    <div className="fixed max-w-lg transform -translate-x-1/2 top-0 left-1/2 px-4 w-full h-full flex items-center justify-center bg-black backdrop-blur-md bg-opacity-40 z-50">
+      <div className="bg-zinc-900/20 p-4 rounded-lg border border-zinc-800/70">
         <Image
           src={images[currentIndex]}
           alt={`image-${currentIndex + 1}`}
