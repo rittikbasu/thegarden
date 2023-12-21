@@ -14,7 +14,6 @@ export function formatNotes(data) {
         minute: "2-digit",
         hour12: true,
       }),
-      text: entry.text.split(" ").slice(0, 50).join(" "),
     };
   });
 }
