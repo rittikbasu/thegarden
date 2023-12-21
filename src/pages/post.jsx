@@ -12,7 +12,7 @@ import { db } from "@/utils/db";
 import { IoAddOutline } from "react-icons/io5";
 import { HiArrowLongRight } from "react-icons/hi2";
 import { HiArrowLongLeft } from "react-icons/hi2";
-import { IoMdCloseCircle } from "react-icons/io";
+import { IoClose } from "react-icons/io5";
 
 const Post = ({ previousPath }) => {
   const [text, setText] = useState("");
@@ -26,7 +26,8 @@ const Post = ({ previousPath }) => {
   const router = useRouter();
 
   const linkPath =
-    previousPath && ["/search", "/", "/reflect"].includes(previousPath)
+    previousPath &&
+    ["/search", "/", "/reflect", "/settings"].includes(previousPath)
       ? previousPath
       : "/";
 
@@ -46,10 +47,8 @@ const Post = ({ previousPath }) => {
 
   const handleImageChange = async (event) => {
     if (event.target.files) {
-      console.log(event.target.files);
       const files = Array.from(event.target.files);
       const blobs = await Promise.all(files.map((file) => imageToBlob(file)));
-      console.log(blobs);
       setImages((prevImages) => [...prevImages, ...blobs]);
     }
   };
@@ -134,9 +133,9 @@ const Post = ({ previousPath }) => {
           placeholder="what's are you thinking?"
         ></textarea>
         {images.length !== 0 && (
-          <div className="flex flex-wrap gap-x-4 px-4 py-2">
+          <div className="flex overflow-x-auto whitespace-nowrap gap-x-4 px-4 py-2.5">
             {imageUrls.map((imageUrl, index) => (
-              <div key={index} className="relative">
+              <div key={index} className="relative shrink-0">
                 <Image
                   src={imageUrl}
                   alt={`image-${index}`}
@@ -149,9 +148,9 @@ const Post = ({ previousPath }) => {
                     URL.revokeObjectURL(imageUrl);
                     handleDelete(index);
                   }}
-                  className="absolute -top-3 -right-3"
+                  className="absolute -top-2.5 -right-2.5"
                 >
-                  <IoMdCloseCircle className="w-6 h-6 fill-red-500 bg-zinc-900 rounded-full" />
+                  <IoClose className="w-5 h-5 fill-zinc-200 bg-red-500 rounded-full" />
                 </button>
               </div>
             ))}

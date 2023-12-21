@@ -11,7 +11,7 @@ import Carousel from "@/components/Carousel";
 
 import { IoAddOutline } from "react-icons/io5";
 import { HiArrowLongLeft } from "react-icons/hi2";
-import { IoMdCloseCircle } from "react-icons/io";
+import { IoClose } from "react-icons/io5";
 import { AiFillEdit } from "react-icons/ai";
 import { MdOutlineFileDownloadDone } from "react-icons/md";
 
@@ -154,7 +154,8 @@ export default function NotePage({ previousPath }) {
   }
 
   const linkPath =
-    previousPath && ["/search", "/", "/reflect"].includes(previousPath)
+    previousPath &&
+    ["/search", "/", "/reflect", "/settings"].includes(previousPath)
       ? previousPath
       : "/";
   return (
@@ -237,9 +238,9 @@ export default function NotePage({ previousPath }) {
           ></textarea>
         )}
         {imageUrls && imageUrls.length !== 0 && (
-          <div className="flex flex-wrap gap-x-4 px-4 pt-4 pb-2">
+          <div className="flex overflow-x-auto whitespace-nowrap gap-x-4 px-4 pt-4 pb-4">
             {imageUrls.map((image, index) => (
-              <div key={index} className="relative">
+              <div key={index} className="relative shrink-0">
                 <Image
                   src={image}
                   alt={`image-${index}`}
@@ -251,9 +252,9 @@ export default function NotePage({ previousPath }) {
                 {isEditing && (
                   <button
                     onClick={() => handleImageDelete(index)}
-                    className="absolute -top-3 -right-3"
+                    className="absolute -top-2.5 -right-2.5"
                   >
-                    <IoMdCloseCircle className="w-6 h-6 fill-red-500 bg-zinc-900 rounded-full" />
+                    <IoClose className="w-5 h-5 fill-zinc-200 bg-red-500 rounded-full" />
                   </button>
                 )}
               </div>
@@ -263,6 +264,7 @@ export default function NotePage({ previousPath }) {
               images={imageUrls}
               onClose={() => setShowCarousel(false)}
               selectedImageIndex={selectedImageIndex}
+              setSelectedImageIndex={setSelectedImageIndex}
             />
           </div>
         )}
