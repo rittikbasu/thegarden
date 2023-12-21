@@ -1,6 +1,6 @@
 import { createClient } from "@supabase/supabase-js";
 import Dexie from "dexie";
-import formatNotes from "./formatNotes";
+import { formatNotes } from "./formatNotes";
 
 const SUPABASE_URL = "https://gmnppbemewwdblvrxxex.supabase.co";
 const SUPABASE_API_KEY =
