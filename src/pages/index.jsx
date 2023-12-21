@@ -4,12 +4,10 @@ import clsx from "clsx";
 import Note from "@/components/Note";
 import { IoIosArrowUp } from "react-icons/io";
 import { formatNotes } from "@/utils/formatNotes";
-import Spinner from "@/components/Spinner";
 import { db } from "@/utils/db";
 
 export default function Home() {
   const [notes, setNotes] = useState([]);
-  const [loading, setLoading] = useState(false);
   const [showBackToTopBtn, setShowBackToTopBtn] = useState(false);
 
   const lastNoteRef = useRef(null);
@@ -21,6 +19,27 @@ export default function Home() {
     console.log(result, result[1]);
     setNotes(formatNotes(result));
   };
+
+  useEffect(() => {
+    const savedScrollPosition = sessionStorage.getItem("scrollPosition");
+    if (savedScrollPosition) {
+      const scroll = () => {
+        window.scrollTo(0, parseInt(savedScrollPosition, 10));
+      };
+      // Wait until the next repaint to scroll, ensuring content has loaded
+      window.requestAnimationFrame(scroll);
+    }
+
+    const saveScrollPosition = () => {
+      sessionStorage.setItem("scrollPosition", window.scrollY.toString());
+    };
+    window.addEventListener("scroll", saveScrollPosition);
+
+    // Clean up the event listener when the component unmounts
+    return () => {
+      window.removeEventListener("scroll", saveScrollPosition);
+    };
+  }, [notes]);
 
   useEffect(() => {
     getData();
@@ -84,12 +103,6 @@ export default function Home() {
             />
           </div>
         ))}
-        {loading && (
-          <Spinner
-            containerClassName="flex justify-center pt-4"
-            svgClassName="w-8 h-8 fill-blue-500"
-          />
-        )}
       </div>
     </div>
   );

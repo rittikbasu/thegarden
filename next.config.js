@@ -2,7 +2,7 @@
 const nextConfig = {
   reactStrictMode: true,
   experimental: {
-    scrollRestoration: true,
+    scrollRestoration: false,
   },
   images: {
     domains: ["ik.imagekit.io"],
