@@ -1,16 +1,43 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Head from "next/head";
 import clsx from "clsx";
+
+import NotesContainer from "@/components/NotesContainer";
+import { db } from "@/utils/db";
+import { formatNotes } from "@/utils/formatNotes";
+
 import { LuSparkles } from "react-icons/lu";
 import { IoSearchOutline } from "react-icons/io5";
 
-const Search = ({ notes, onSearch }) => {
-  const [searchTerm, setSearchTerm] = useState("");
+const Search = () => {
+  const [searchTerm, setSearchTerm] = useState(() => {
+    return sessionStorage.getItem("searchTerm") || "";
+  });
   const [aiToggle, setAiToggle] = useState(false);
+  const [searchResults, setSearchResults] = useState([]);
 
-  const handleSearch = () => {
-    onSearch(searchTerm);
+  const handleSearch = async () => {
+    if (searchTerm.trim() === "") {
+      setSearchResults([]);
+      return;
+    }
+    const results = await db.notes
+      .orderBy("created_at")
+      .reverse()
+      .filter((note) =>
+        note.text.toLowerCase().includes(searchTerm.toLowerCase())
+      )
+      .toArray();
+    console.log(formatNotes(results));
+    setSearchResults(formatNotes(results));
   };
+
+  useEffect(() => {
+    sessionStorage.setItem("searchTerm", searchTerm);
+    if (aiToggle === false) {
+      handleSearch();
+    }
+  }, [searchTerm]);
 
   const handleToggle = (e) => {
     setAiToggle(e.target.checked);
@@ -38,11 +65,15 @@ const Search = ({ notes, onSearch }) => {
             placeholder={
               aiToggle
                 ? "ask me all about your notes"
-                : "which note are you looking for?"
+                : "find notes using words or dates"
             }
+            maxLength={aiToggle ? 100 : 30}
           />
           {aiToggle && (
-            <button className="mr-2 text-blue-400 flex items-center justify-center">
+            <button
+              className="mr-2 text-blue-400 flex items-center justify-center"
+              onClick={handleSearch}
+            >
               <IoSearchOutline />
             </button>
           )}
@@ -62,6 +93,12 @@ const Search = ({ notes, onSearch }) => {
           />
           <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
         </label>
+      </div>
+      <div className="pb-12 pt-8">
+        <NotesContainer
+          notes={searchResults}
+          scrollPositionKey={"searchScrollPosition"}
+        />
       </div>
     </div>
   );
