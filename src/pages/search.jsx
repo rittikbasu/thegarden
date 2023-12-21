@@ -10,11 +10,17 @@ import { LuSparkles } from "react-icons/lu";
 import { IoSearchOutline } from "react-icons/io5";
 
 const Search = () => {
-  const [searchTerm, setSearchTerm] = useState(() => {
-    return sessionStorage.getItem("searchTerm") || "";
-  });
+  const [searchTerm, setSearchTerm] = useState("");
   const [aiToggle, setAiToggle] = useState(false);
   const [searchResults, setSearchResults] = useState([]);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const storedSearchTerm = sessionStorage.getItem("searchTerm");
+
+      if (storedSearchTerm) setSearchTerm(storedSearchTerm);
+    }
+  }, []);
 
   const handleSearch = async () => {
     if (searchTerm.trim() === "") {
