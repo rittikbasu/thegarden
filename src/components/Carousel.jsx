@@ -1,25 +1,24 @@
-import { useState, useEffect } from "react";
 import Image from "next/image";
 
 import { IoIosArrowBack } from "react-icons/io";
 import { IoIosArrowForward } from "react-icons/io";
 import { IoClose } from "react-icons/io5";
 
-const Carousel = ({ isOpen, images, onClose, selectedImageIndex }) => {
-  const [currentIndex, setCurrentIndex] = useState(selectedImageIndex);
-
-  useEffect(() => {
-    setCurrentIndex(selectedImageIndex);
-  }, [selectedImageIndex]);
-
+const Carousel = ({
+  isOpen,
+  images,
+  onClose,
+  selectedImageIndex,
+  setSelectedImageIndex,
+}) => {
   if (!isOpen || !images.length) return null;
 
   const handleNext = () => {
-    setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length);
+    setSelectedImageIndex((prevIndex) => (prevIndex + 1) % images.length);
   };
 
   const handlePrev = () => {
-    setCurrentIndex(
+    setSelectedImageIndex(
       (prevIndex) => (prevIndex - 1 + images.length) % images.length
     );
   };
@@ -28,8 +27,8 @@ const Carousel = ({ isOpen, images, onClose, selectedImageIndex }) => {
     <div className="fixed max-w-lg transform -translate-x-1/2 top-0 left-1/2 px-4 w-full h-full flex items-center justify-center bg-black backdrop-blur-md bg-opacity-40 z-50">
       <div className="bg-zinc-900/20 p-4 rounded-lg border border-zinc-800/70">
         <Image
-          src={images[currentIndex]}
-          alt={`image-${currentIndex + 1}`}
+          src={images[selectedImageIndex]}
+          alt={`image-${selectedImageIndex + 1}`}
           width={500}
           height={500}
           className="object-contain rounded"
