@@ -2,7 +2,7 @@ import Link from "next/link";
 import clsx from "clsx";
 import { parse, differenceInCalendarDays } from "date-fns";
 
-const Note = ({ id, date, time, content, index, prevDate, nextDate }) => {
+const NoteCard = ({ id, date, time, content, index, prevDate, nextDate }) => {
   const dateFormat = "EEE, MMM d, yyyy";
   const currentDate = parse(date, dateFormat, new Date());
   const previousDate = parse(prevDate, dateFormat, new Date());
@@ -51,4 +51,4 @@ const Note = ({ id, date, time, content, index, prevDate, nextDate }) => {
   );
 };
 
-export default Note;
+export default NoteCard;
