@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { VectorStorage } from "vector-storage";
 
 import Header from "@/components/Header";
 import Navbar from "@/components/Navbar";
@@ -32,6 +33,46 @@ export default function App({ Component, pageProps }) {
   const [previousPath, setPreviousPath] = useState("");
 
   useEffect(() => {
+    let intervalId;
+    const vectorStore = new VectorStorage({
+      openAIApiKey: process.env.NEXT_PUBLIC_OPENAI_API_KEY,
+    });
+
+    const syncNotes = async () => {
+      const unsyncedNotes = await db.notes
+        .where("sync")
+        .equals("false")
+        .toArray();
+      if (unsyncedNotes.length === 0) return;
+
+      const texts = unsyncedNotes.map((note) => note.text);
+      const metadatas = unsyncedNotes.map((note) => ({
+        id: note.id,
+        createdAt: note.created_at,
+      }));
+
+      try {
+        const response = await vectorStore.addTexts(texts, metadatas);
+        console.log(response);
+        const updatePromises = unsyncedNotes.map((note) =>
+          db.notes.update(note.id, { sync: "true" })
+        );
+        await Promise.all(updatePromises);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    if (typeof window !== "undefined") {
+      intervalId = setInterval(syncNotes, 10000);
+    }
+
+    return () => {
+      if (intervalId) clearInterval(intervalId);
+    };
+  }, []);
+
+  useEffect(() => {
     const handleRouteChange = (url) => {
       setPreviousPath(router.asPath);
     };
@@ -43,12 +84,12 @@ export default function App({ Component, pageProps }) {
     };
   }, [router.asPath, router.events]);
 
-  const sync = async () => {
-    const tableLength = await db.notes.count();
-    if (tableLength === 0) {
-      await fetchAndStoreData();
-    }
-  };
+  // const sync = async () => {
+  //   const tableLength = await db.notes.count();
+  //   if (tableLength === 0) {
+  //     await fetchAndStoreData();
+  //   }
+  // };
   return (
     <div
       className={`max-w-lg mx-auto px-8 ${poppins.variable} ${workSans.variable} font-sans`}

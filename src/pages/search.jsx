@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Head from "next/head";
 import clsx from "clsx";
 
@@ -13,6 +13,7 @@ const Search = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [aiToggle, setAiToggle] = useState(false);
   const [searchResults, setSearchResults] = useState([]);
+  const lastNoteRef = useRef(null);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -34,7 +35,7 @@ const Search = () => {
         note.text.toLowerCase().includes(searchTerm.toLowerCase())
       )
       .toArray();
-    console.log(formatNotes(results));
+    // console.log(formatTimestamp(results[0]?.created_at));
     setSearchResults(formatNotes(results));
   };
 
@@ -43,7 +44,7 @@ const Search = () => {
     if (aiToggle === false) {
       handleSearch();
     }
-  }, [searchTerm]);
+  }, [searchTerm, aiToggle]);
 
   const handleToggle = (e) => {
     setAiToggle(e.target.checked);
@@ -104,6 +105,7 @@ const Search = () => {
         <NotesContainer
           notes={searchResults}
           scrollPositionKey={"searchScrollPosition"}
+          lastNoteRef={lastNoteRef}
         />
       </div>
     </div>

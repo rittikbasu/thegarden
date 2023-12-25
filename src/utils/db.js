@@ -2,9 +2,8 @@ import { createClient } from "@supabase/supabase-js";
 import Dexie from "dexie";
 import { formatNotes } from "./formatNotes";
 
-const SUPABASE_URL = "https://gmnppbemewwdblvrxxex.supabase.co";
-const SUPABASE_API_KEY =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdtbnBwYmVtZXd3ZGJsdnJ4eGV4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE2OTA4MDU4OTksImV4cCI6MjAwNjM4MTg5OX0.X385uaUepOK0oBohxYwB9Yn_PoCLBn8W3v9cXjuQlNE";
+const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const SUPABASE_API_KEY = process.env.NEXT_PUBLIC_SUPABASE_API_KEY;
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_API_KEY);
 export const db = new Dexie("thegarden");
@@ -13,9 +12,18 @@ db.version(2).stores({
 });
 // Hook into the 'creating' event to set default values for new records
 db.notes.hook("creating", function (primaryKey, obj, transaction) {
-  obj.sync = false;
+  obj.sync = "false";
   obj.operation = "create";
 });
+
+// db.transaction("rw", db.notes, async () => {
+//   await db.notes
+//     .where("operation")
+//     .equals("create")
+//     .modify((note) => {
+//       note.sync = "false";
+//     });
+// });
 
 // Function to fetch data from Supabase and store it in IndexedDB
 export async function fetchAndStoreData() {

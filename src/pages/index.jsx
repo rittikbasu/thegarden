@@ -1,15 +1,16 @@
 import Head from "next/head";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import NotesContainer from "@/components/NotesContainer";
 import { formatNotes } from "@/utils/formatNotes";
 import { db } from "@/utils/db";
 
 export default function Home() {
   const [notes, setNotes] = useState([]);
+  const lastNoteRef = useRef(null);
 
   const getData = async () => {
     const result = await db.notes.orderBy("created_at").reverse().toArray();
-    console.log(result, result[1]);
+    // console.log(result, result[1]);
     setNotes(formatNotes(result));
   };
 
@@ -25,6 +26,7 @@ export default function Home() {
         <NotesContainer
           notes={notes}
           scrollPositionKey={"homeScrollPosition"}
+          lastNoteRef={lastNoteRef}
         />
       </div>
     </div>
