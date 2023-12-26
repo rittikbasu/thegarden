@@ -2,7 +2,16 @@ import Link from "next/link";
 import clsx from "clsx";
 import { parse, differenceInCalendarDays } from "date-fns";
 
-const NoteCard = ({ id, date, time, content, index, prevDate, nextDate }) => {
+const NoteCard = ({
+  id,
+  highlight,
+  date,
+  time,
+  content,
+  index,
+  prevDate,
+  nextDate,
+}) => {
   const dateFormat = "EEE, MMM d, yyyy";
   const currentDate = parse(date, dateFormat, new Date());
   const previousDate = parse(prevDate, dateFormat, new Date());
@@ -18,7 +27,12 @@ const NoteCard = ({ id, date, time, content, index, prevDate, nextDate }) => {
           )}
         ></div>
       )}
-      <Link href={`/note?id=${id}`} passHref>
+      <Link
+        href={
+          highlight ? `/note?id=${id}&highlight=${highlight}` : `/note?id=${id}`
+        }
+        passHref
+      >
         <div className="flex items-center">
           <div className="bg-zinc-900/80 border border-zinc-800/60 rounded-3xl w-full">
             <div className="p-4 text-white text-sm">

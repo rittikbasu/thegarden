@@ -6,6 +6,7 @@ export default function NotesContainer({
   notes,
   scrollPositionKey,
   lastNoteRef,
+  highlight,
 }) {
   const [showBackToTopBtn, setShowBackToTopBtn] = useState(false);
 
@@ -19,10 +20,7 @@ export default function NotesContainer({
   useEffect(() => {
     const handleScroll = () => {
       const scrollY = window.scrollY;
-
-      if (lastNoteRef.current) {
-        sessionStorage.setItem(scrollPositionKey, scrollY.toString());
-      }
+      sessionStorage.setItem(scrollPositionKey, scrollY.toString());
 
       if (scrollY > 200) {
         setShowBackToTopBtn(true);
@@ -66,6 +64,7 @@ export default function NotesContainer({
           >
             <NoteCard
               id={note.id}
+              highlight={highlight}
               date={note.date}
               time={note.time}
               content={note.text}

@@ -17,7 +17,7 @@ import { MdOutlineFileDownloadDone } from "react-icons/md";
 
 export default function NotePage({ previousPath }) {
   const router = useRouter();
-  const { id } = router.query;
+  const { id, highlight } = router.query;
   const [text, setText] = useState("");
   const [editedNote, setEditedNote] = useState("");
   const [images, setImages] = useState([]);
@@ -224,7 +224,18 @@ export default function NotePage({ previousPath }) {
             placeholder="what's are you thinking?"
             style={{ wordSpacing: "0.2em" }}
           >
-            {text}
+            {highlight ? (
+              <span
+                dangerouslySetInnerHTML={{
+                  __html: text.replace(
+                    new RegExp(highlight, "ig"),
+                    `<span style="background-color: yellow; color: black; font-weight: bold; border-radius: 5px; padding: 0 2px; margin: 0 0.5px;">$&</span>`
+                  ),
+                }}
+              />
+            ) : (
+              text
+            )}
           </div>
         ) : (
           <textarea
