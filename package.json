@@ -17,10 +17,12 @@
     "formidable": "^3.5.1",
     "imagekit": "^4.1.4",
     "next": "14.0.3",
+    "openai": "^4.24.1",
     "react": "^18.2.0",
     "react-dom": "^18",
     "react-github-contribution-calendar": "^2.2.0",
     "react-icons": "^4.12.0",
+    "react-markdown": "^9.0.1",
     "short-unique-id": "^5.0.3",
     "vector-storage": "^1.0.55"
   },
