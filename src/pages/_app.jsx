@@ -45,7 +45,16 @@ export default function App({ Component, pageProps }) {
         .toArray();
       if (unsyncedNotes.length === 0) return;
 
-      const texts = unsyncedNotes.map((note) => note.text);
+      const texts = unsyncedNotes.map((note) => {
+        const date = new Date(note.created_at);
+        const formattedDate = date.toLocaleDateString("en-US", {
+          weekday: "long",
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+        });
+        return `Date: ${formattedDate}\n${note.text}`;
+      });
       const metadatas = unsyncedNotes.map((note) => ({
         id: note.id,
         createdAt: note.created_at,
