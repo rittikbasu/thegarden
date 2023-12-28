@@ -17,3 +17,13 @@ export function formatNotes(data) {
     };
   });
 }
+
+export function getFormattedDate(created_at) {
+  const date = new Date(created_at);
+  return date.toLocaleDateString("en-US", {
+    weekday: "long",
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+}

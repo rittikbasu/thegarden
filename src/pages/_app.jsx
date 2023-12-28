@@ -8,6 +8,7 @@ import Header from "@/components/Header";
 import Navbar from "@/components/Navbar";
 import Particles from "@/components/Particles";
 import { fetchAndStoreData, db } from "@/utils/db";
+import { getFormattedDate } from "@/utils/formatNotes";
 
 import "@/styles/globals.css";
 import favicon from "../../public/icon.png";
@@ -46,13 +47,7 @@ export default function App({ Component, pageProps }) {
       if (unsyncedNotes.length === 0) return;
 
       const texts = unsyncedNotes.map((note) => {
-        const date = new Date(note.created_at);
-        const formattedDate = date.toLocaleDateString("en-US", {
-          weekday: "long",
-          year: "numeric",
-          month: "long",
-          day: "numeric",
-        });
+        const formattedDate = getFormattedDate(note.created_at);
         return `Date: ${formattedDate}\n${note.text}`;
       });
       const metadatas = unsyncedNotes.map((note) => ({
