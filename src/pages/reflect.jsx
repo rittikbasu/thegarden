@@ -88,7 +88,7 @@ const Reflect = () => {
         />
       </div>
       <div className="flex items-center justify-end mt-2 mr-4 md:mr-0">
-        <span className="text-xs">Less</span>
+        <span className="text-xs">less</span>
         <div className="flex mx-2">
           {panelColors.map((color, index) => (
             <div
@@ -100,7 +100,7 @@ const Reflect = () => {
             ></div>
           ))}
         </div>
-        <span className="text-xs">More</span>
+        <span className="text-xs">more</span>
       </div>
     </div>
   );
