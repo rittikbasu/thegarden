@@ -37,7 +37,6 @@ const Post = ({ previousPath }) => {
 
   useEffect(() => {
     const imageUrls = images.map((image) => URL.createObjectURL(image));
-    console.log(imageUrls);
     return () => imageUrls.forEach(URL.revokeObjectURL);
   }, [images]);
 
