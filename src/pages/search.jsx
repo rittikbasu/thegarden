@@ -238,15 +238,24 @@ const Search = () => {
       </div>
       <div className="pb-12 pt-8">
         {aiToggle ? (
-          (completion !== "" || aiResults !== "") && (
-            <div className="flex items-center justify-center">
-              <div className="bg-zinc-900/60 w-full rounded-xl flex p-4 overflow-y-auto">
-                <p className="text-base font-workSans text-zinc-400">
-                  <Markdown>{streaming ? completion : aiResults}</Markdown>
-                </p>
+          <>
+            {(completion !== "" || aiResults !== "") && (
+              <div className="flex items-center justify-center">
+                <div className="bg-zinc-900/60 w-full rounded-xl flex p-4 overflow-y-auto">
+                  <p className="text-base font-workSans text-zinc-400">
+                    <Markdown>{streaming ? completion : aiResults}</Markdown>
+                  </p>
+                </div>
               </div>
-            </div>
-          )
+            )}{" "}
+            {showReferences && (
+              <div className="pb-12">
+                <ReferencesAccordion
+                  metadata={streaming ? [] : referenceData}
+                />
+              </div>
+            )}
+          </>
         ) : (
           <NotesContainer
             notes={searchResults}
@@ -254,11 +263,6 @@ const Search = () => {
             lastNoteRef={lastNoteRef}
             highlight={searchTerm}
           />
-        )}
-        {showReferences && (
-          <div className="pb-12">
-            <ReferencesAccordion metadata={streaming ? [] : referenceData} />
-          </div>
         )}
       </div>
     </div>
