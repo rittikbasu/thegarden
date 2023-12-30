@@ -27,3 +27,15 @@ export function getFormattedDate(created_at) {
     day: "numeric",
   });
 }
+
+export function getShortFormattedDate(created_at) {
+  const date = new Date(created_at);
+  return date
+    .toLocaleDateString("en-US", {
+      weekday: "short",
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+    })
+    .toLowerCase();
+}

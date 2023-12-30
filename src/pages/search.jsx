@@ -6,6 +6,7 @@ import { useCompletion } from "ai/react";
 import Markdown from "react-markdown";
 
 import NotesContainer from "@/components/NotesContainer";
+import ReferencesAccordion from "@/components/ReferencesAccordion";
 import { db } from "@/utils/db";
 import { formatNotes, getFormattedDate } from "@/utils/formatNotes";
 
@@ -36,11 +37,14 @@ const Search = () => {
   const [searchResults, setSearchResults] = useState([]);
   const [aiResults, setAIResults] = useState("");
   const [streaming, setStreaming] = useState(false);
+  const [referenceData, setReferenceData] = useState([]);
+  const [showReferences, setShowReferences] = useState(false);
   const lastNoteRef = useRef(null);
   const { completion, complete } = useCompletion({
     api: "/api/completion",
     onFinish: () => {
       setStreaming(false);
+      setShowReferences(true);
       console.log("finished");
     },
     onError: (err) => {
@@ -55,11 +59,16 @@ const Search = () => {
       const storedAISearchTerm = sessionStorage.getItem("aiSearchTerm");
       const storedAIResults = sessionStorage.getItem("aiSearchResults");
       const storedAIToggle = sessionStorage.getItem("aiToggle");
+      const storedReferenceData = sessionStorage.getItem("referenceData");
 
       if (storedSearchTerm) setSearchTerm(storedSearchTerm);
       if (storedAISearchTerm) setAISearchTerm(storedAISearchTerm);
       if (storedAIResults) setAIResults(storedAIResults);
       if (storedAIToggle) setAiToggle(JSON.parse(storedAIToggle));
+      if (storedReferenceData) {
+        setReferenceData(JSON.parse(storedReferenceData));
+        setShowReferences(true);
+      }
     }
   }, []);
 
@@ -85,8 +94,10 @@ const Search = () => {
     if (aiSearchTerm.trim() === "") return;
 
     setStreaming(true);
+    setShowReferences(false);
     sessionStorage.setItem("aiSearchTerm", aiSearchTerm);
     setAIResults("");
+    setReferenceData([]);
 
     const vectorStore = new VectorStorage({
       openAIApiKey: process.env.NEXT_PUBLIC_OPENAI_API_KEY,
@@ -96,14 +107,24 @@ const Search = () => {
       query: aiSearchTerm,
       k: 30,
     });
-
-    const formattedResults = results.similarItems.map((item) => item.text);
+    console.log(results);
+    const filteredResults = results.similarItems.filter(
+      (item) => item.score > 0.84
+    );
+    console.log(filteredResults);
+    const formattedResults = filteredResults.map((item) => item.text);
+    const resultMetadata = filteredResults.map((item) => ({
+      id: item.metadata.id,
+      score: item.score.toFixed(2),
+    }));
 
     const messages = createMessages(aiSearchTerm, formattedResults);
 
     complete({ messages }).then((res) => {
       setAIResults(res);
+      setReferenceData(resultMetadata);
       sessionStorage.setItem("aiSearchResults", res);
+      sessionStorage.setItem("referenceData", JSON.stringify(resultMetadata));
     });
   };
 
@@ -218,7 +239,7 @@ const Search = () => {
       <div className="pb-12 pt-8">
         {aiToggle ? (
           (completion !== "" || aiResults !== "") && (
-            <div className="flex items-center justify-center pb-12">
+            <div className="flex items-center justify-center">
               <div className="bg-zinc-900/60 w-full rounded-xl flex p-4 overflow-y-auto">
                 <p className="text-base font-workSans text-zinc-400">
                   <Markdown>{streaming ? completion : aiResults}</Markdown>
@@ -233,6 +254,11 @@ const Search = () => {
             lastNoteRef={lastNoteRef}
             highlight={searchTerm}
           />
+        )}
+        {showReferences && (
+          <div className="pb-12">
+            <ReferencesAccordion metadata={streaming ? [] : referenceData} />
+          </div>
         )}
       </div>
     </div>
