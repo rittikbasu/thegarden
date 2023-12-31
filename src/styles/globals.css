@@ -22,12 +22,26 @@ body {
     ) env(safe-area-inset-left, 20px);
 }
 
-ul {
+.search ul {
   list-style-type: disc;
   padding-left: 1.5em;
 }
 
-ol {
+.search ol {
   list-style-type: decimal;
   padding-left: 1.5em;
+}
+
+.recharts-tooltip-wrapper {
+  z-index: 1000;
+}
+
+.ring-2 {
+  --tw-ring-offset-shadow: none;
+  --tw-ring-shadow: none
+  box-shadow: none;
+}
+
+* {
+  --tw-ring-color: none !important;
 }

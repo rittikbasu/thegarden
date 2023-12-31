@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.38.5",
+    "@tremor/react": "^3.12.1",
     "ai": "^2.2.30",
     "clsx": "^2.0.0",
     "date-fns": "^2.30.0",

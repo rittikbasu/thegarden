@@ -107,7 +107,6 @@ const Search = () => {
       query: aiSearchTerm,
       k: 30,
     });
-    console.log(results);
     const filteredResults = results.similarItems.filter(
       (item) => item.score > 0.84
     );
@@ -210,7 +209,7 @@ const Search = () => {
       </div>
       <div className="flex items-center justify-between mx-1">
         <div className="flex items-center">
-          <span className="mr-3 text-sm font-medium text-gray-900 dark:text-gray-300">
+          <span className="mr-3 text-sm font-medium text-gray-300">
             <LuSparkles className="inline-block w-4 h-4 mr-2" />
             ai search
           </span>
@@ -222,7 +221,7 @@ const Search = () => {
               onChange={handleToggle}
               checked={aiToggle}
             />
-            <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
+            <div className="w-11 h-6 peer-focus:outline-none rounded-full peer bg-zinc-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all border-gray-600 peer-checked:bg-blue-600"></div>
           </label>
         </div>
         {aiToggle && (
@@ -241,8 +240,8 @@ const Search = () => {
           <>
             {(completion !== "" || aiResults !== "") && (
               <div className="flex items-center justify-center">
-                <div className="bg-zinc-900/60 w-full rounded-xl flex p-4 overflow-y-auto">
-                  <p className="text-base font-workSans text-zinc-400">
+                <div className="bg-zinc-900/80 border border-zinc-800/60 w-full rounded-xl flex p-4 overflow-y-auto">
+                  <p className="text-base font-workSans text-zinc-400 search">
                     <Markdown>{streaming ? completion : aiResults}</Markdown>
                   </p>
                 </div>
