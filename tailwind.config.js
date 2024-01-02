@@ -26,7 +26,7 @@ module.exports = {
         "dark-tremor": {
           background: {
             subtle: "#27272a", // gray-800
-            DEFAULT: "#000000", // black
+            DEFAULT: "#09090b", // zinc-950
             emphasis: "#d1d5db", // gray-300
           },
           border: {
