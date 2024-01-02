@@ -9,26 +9,10 @@ import NotesContainer from "@/components/NotesContainer";
 import ReferencesAccordion from "@/components/ReferencesAccordion";
 import { db } from "@/utils/db";
 import { formatNotes, getFormattedDate } from "@/utils/formatNotes";
+import { createMessages } from "@/utils/createMessages";
 
 import { LuSparkles } from "react-icons/lu";
 import { IoSearchOutline } from "react-icons/io5";
-
-const createMessages = (aiSearchTerm, formattedResults) => {
-  const prompt =
-    `Search prompt: ${aiSearchTerm},\n Journal Entries:\n` +
-    JSON.stringify(formattedResults);
-  return [
-    {
-      role: "system",
-      content:
-        "You are a personal knowledge base that has access to me, the user's journal entries. You will always address me in the first person. Now, given the search prompt, you will analyze the journal entries provided and give insights only based on the relevant information. You can respond in simple markdown in a structured and easy to read format and if no relevant information is found, respond with 'no results found' in lowercase.",
-    },
-    {
-      role: "user",
-      content: prompt,
-    },
-  ];
-};
 
 const Search = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -240,8 +224,8 @@ const Search = () => {
           <>
             {(completion !== "" || aiResults !== "") && (
               <div className="flex items-center justify-center">
-                <div className="bg-zinc-900/80 border border-zinc-800/60 w-full rounded-xl flex p-4 overflow-y-auto">
-                  <p className="text-base font-workSans text-zinc-400 search">
+                <div className="bg-zinc-900/80 border border-zinc-800/60 w-full rounded-xl flex px-4 pt-4 overflow-y-auto">
+                  <p className="text-base font-workSans text-zinc-400 markdown">
                     <Markdown>{streaming ? completion : aiResults}</Markdown>
                   </p>
                 </div>

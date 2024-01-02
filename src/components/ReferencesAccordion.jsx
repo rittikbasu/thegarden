@@ -20,9 +20,9 @@ const ReferencesAccordion = ({ metadata }) => {
     bulkFetchData(ids, setResult);
   }, [metadata]);
   return (
-    <div className="">
+    <div className="markdown">
       <button
-        className="flex gap-x-2 items-center py-2 px-1 text-left"
+        className="flex gap-x-2 items-center pt-2 px-1 text-left"
         onClick={() => setIsOpen(!isOpen)}
       >
         <span className="text-zinc-300">references</span>
