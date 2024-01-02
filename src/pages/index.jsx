@@ -1,6 +1,7 @@
 import Head from "next/head";
 import { useState, useEffect, useRef } from "react";
 import NotesContainer from "@/components/NotesContainer";
+import ContributionGraph from "@/components/ContributionGraph";
 import { formatNotes } from "@/utils/formatNotes";
 import { db } from "@/utils/db";
 
@@ -23,6 +24,7 @@ export default function Home() {
         <title>the garden</title>
       </Head>
       <div className="pb-12">
+        <ContributionGraph />
         <NotesContainer
           notes={notes}
           scrollPositionKey={"homeScrollPosition"}
