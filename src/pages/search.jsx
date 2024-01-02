@@ -147,13 +147,11 @@ const Search = () => {
       <Head>
         <title>search - the garden</title>
       </Head>
-      <div>
-        <p className="ml-2 pb-1 text-sm font-workSans text-gray-500">
-          {aiToggle
-            ? "talk to your notes & find insights with ai"
-            : "find your notes using characters or dates"}
-        </p>
-      </div>
+      <p className="ml-2 pb-1 text-sm font-workSans text-gray-500">
+        {aiToggle
+          ? "talk to your notes & find insights with ai"
+          : "find your notes using characters or dates"}
+      </p>
       <div className="w-full pb-4 flex justify-center">
         <div
           ref={containerRef}
