@@ -103,7 +103,7 @@ const Reflect = () => {
         .toArray();
     }
     console.log("result", result);
-    const prompt = `Given below are the journal entries from ${datePickerValue.from} to ${datePickerValue.to}. Write a smart and concise summary reflecting on what I've been up to with the heading "Here's a summary of what you've been up to" and provide deep insights and recommendations based on these entries starting with "Here are some insights and recommendations".`;
+    const prompt = `Given below are the journal entries from ${datePickerValue.from} to ${datePickerValue.to}. Write a short and smart summary reflecting on what I've been up to with the heading "Here's a summary of what you've been up to" and provide deep insights and actionable recommendations based on these entries starting with "Here are some insights and recommendations".`;
     const messages = createMessages(prompt, result);
     setStreaming(true);
     complete({ messages }).then((response) => {
@@ -147,9 +147,12 @@ const Reflect = () => {
       <Head>
         <title>reflect - the garden</title>
       </Head>
+      <p className="ml-1 pb-1 text-sm font-workSans text-gray-500">
+        reflect on your notes by selecting a date
+      </p>
       <div className="flex flex-col justify-center items-center pb-8 gap-x-2">
         <DateRangePicker
-          className="lg:max-w-md mx-auto flex justify-center items-center"
+          className="md:max-w-md mx-auto flex justify-center items-center"
           // value={datePickerValue}
           onValueChange={handleDatePickerChange}
           selectPlaceholder="select"
