@@ -3,12 +3,14 @@ import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { VectorStorage } from "vector-storage";
+import { useCompletion } from "ai/react";
 
 import Header from "@/components/Header";
 import Navbar from "@/components/Navbar";
 import Particles from "@/components/Particles";
-import { fetchAndStoreData, db } from "@/utils/db";
+import { db } from "@/utils/db";
 import { getFormattedDate } from "@/utils/formatNotes";
+import { createMessages } from "@/utils/createMessages";
 
 import "@/styles/globals.css";
 import favicon from "../../public/icon.png";
@@ -32,6 +34,44 @@ const workSans = Work_Sans({
 export default function App({ Component, pageProps }) {
   const router = useRouter();
   const [previousPath, setPreviousPath] = useState("");
+  const today = new Date();
+  const { complete } = useCompletion({
+    api: "/api/completion",
+  });
+  useEffect(() => {
+    const last7DaysReflection = async () => {
+      const last7DaysReflectionDate = await db.reflections
+        .where("type")
+        .equals("last7Days")
+        .toArray();
+      if (
+        last7DaysReflectionDate.length !== 0 &&
+        last7DaysReflectionDate[0].date === today.toLocaleDateString("en-CA")
+      )
+        return;
+      const sevenDaysAgo = new Date(today);
+      sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+      const result = await db.notes
+        .where("created_at")
+        .between(sevenDaysAgo.toISOString(), today.toISOString())
+        .toArray();
+      console.log(result);
+      if (result.length !== 0) {
+        const prompt =
+          "Given below are the journal entries from the last 7 days. Write a smart and concise summary reflecting on what I've been up to with the heading `Here's a summary of what you've been up to` and provide deep insights and recommendations based on these entries starting with `Here are some insights and recommendations`.";
+        const messages = createMessages(prompt, result);
+        complete({ messages }).then((response) => {
+          db.reflections.put({
+            type: "last7Days",
+            date: today.toLocaleDateString("en-CA"),
+            text: response,
+          });
+        });
+      }
+      return result;
+    };
+    last7DaysReflection();
+  }, []);
 
   useEffect(() => {
     let intervalId;
