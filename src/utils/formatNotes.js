@@ -39,3 +39,7 @@ export function getShortFormattedDate(created_at) {
     })
     .toLowerCase();
 }
+
+export function dateToLocale(dateObj) {
+  return dateObj.toLocaleDateString("en-CA");
+}
