@@ -5,37 +5,42 @@ import { db } from "@/utils/db";
 import { useLiveQuery } from "dexie-react-hooks";
 import { DateRangePicker, DateRangePickerItem } from "@tremor/react";
 import Markdown from "react-markdown";
-import { IoSearchOutline } from "react-icons/io5";
+import { IoSearchOutline, IoRefresh } from "react-icons/io5";
+import { Circles } from "svg-loaders-react";
 import { createMessages } from "@/utils/createMessages";
+import { dateToLocale } from "@/utils/formatNotes";
 
 const Reflect = () => {
   const today = new Date();
+  // last 7 days
   const sevenDaysAgo = new Date(today);
   sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
-  const [last7Days, setLast7Days] = useState({
+  const last7Days = {
     from: sevenDaysAgo,
     to: today,
-  });
+  };
+  // last 30 days
+  const thirtyDaysAgo = new Date(today);
+  thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+  const last30Days = {
+    from: thirtyDaysAgo,
+    to: today,
+  };
+  // date picker value
   const [datePickerValue, setDatePickerValue] = useState({
     from: sevenDaysAgo,
     to: today,
+    selectValue: "last7Days",
   });
   const [reflection, setReflection] = useState("");
   const [selectType, setSelectType] = useState("last7Days");
   const [maxDate, setMaxDate] = useState(null);
   const [minDate, setMinDate] = useState(null);
+  const [inputChanged, setInputChanged] = useState(false);
   const { complete, completion } = useCompletion({
     api: "/api/completion",
   });
   const [streaming, setStreaming] = useState(false);
-
-  const thirtyDaysAgo = new Date(today);
-  thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
-  const [last30Days, setLast30Days] = useState({
-    from: thirtyDaysAgo,
-    to: today,
-  });
-
   const last7DaysReflection = useLiveQuery(() =>
     db.reflections
       .where("type")
@@ -57,21 +62,49 @@ const Reflect = () => {
   const handleDatePickerChange = (value) => {
     console.log(value);
     setReflection("");
-
     setDatePickerValue(value);
+    setInputChanged(true);
+
+    const dateRanges = {
+      last7Days: last7Days,
+      last30Days: last30Days,
+      allTime: { from: minDate, to: maxDate },
+    };
     if (value.selectValue) {
       setSelectType(value.selectValue);
     } else {
-      setSelectType("none");
+      let selectValue = null;
+      for (const [key, range] of Object.entries(dateRanges)) {
+        if (
+          dateToLocale(value.from) === dateToLocale(range.from) &&
+          dateToLocale(value.to) === dateToLocale(range.to)
+        ) {
+          selectValue = key;
+          break;
+        }
+      }
+
+      setSelectType(selectValue);
+      console.log(selectValue);
+      selectValue &&
+        setDatePickerValue((prev) => ({
+          ...prev,
+          selectValue: selectValue,
+        }));
     }
   };
 
-  const handleSearch = () => {
-    selectType.selectValue !== "last7Days" && getReflection();
+  const handleSearch = ({ regenerate = false }) => {
+    setInputChanged(false);
+    if (selectType !== "last7Days" || regenerate) {
+      getReflection(regenerate);
+    } else {
+      setReflection(last7DaysReflection);
+    }
   };
 
-  const getReflection = async () => {
-    if (selectType !== "none") {
+  const getReflection = async (regenerate) => {
+    if (selectType && !regenerate) {
       const storedReflection = await db.reflections
         .where("type")
         .equals(selectType)
@@ -109,7 +142,7 @@ const Reflect = () => {
     complete({ messages }).then((response) => {
       setReflection(response);
       setStreaming(false);
-      if (selectType !== "none") {
+      if (selectType) {
         db.reflections.put({
           type: selectType,
           date: today.toLocaleDateString("en-CA"),
@@ -153,14 +186,14 @@ const Reflect = () => {
       <div className="flex flex-col justify-center items-center pb-8 gap-x-2">
         <DateRangePicker
           className="md:max-w-md mx-auto flex justify-center items-center"
-          // value={datePickerValue}
+          value={datePickerValue}
           onValueChange={handleDatePickerChange}
           selectPlaceholder="select"
-          defaultValue={{
-            selectValue: "last7Days",
-            from: last7Days.from,
-            to: last7Days.to,
-          }}
+          // defaultValue={{
+          //   selectValue: selectType,
+          //   from: last7Days.from,
+          //   to: last7Days.to,
+          // }}
           displayFormat="dd/MM/yy"
           minDate={minDate}
           maxDate={maxDate}
@@ -191,15 +224,41 @@ const Reflect = () => {
             all time
           </DateRangePickerItem>
         </DateRangePicker>
-        <div className="flex items-center justify-end w-full mt-4">
-          <button
-            className="py-0.5 px-2 rounded-lg bg-blue-600 shadow-inner shadow-black/50 flex items-center justify-center"
-            onClick={handleSearch}
-            disabled={streaming || datePickerValue.to === undefined}
-          >
-            <IoSearchOutline className="w-4 h-4 mr-1" />
-            search
-          </button>
+        <div className="flex items-center justify-end w-full mt-4 font-workSans">
+          {/* {inputChanged && !streaming && (
+            <span className="mr-2 text-indigo-500 font-bold">˗ˏˋ</span>
+          )} */}
+          {reflection === "" ? (
+            <button
+              className="py-0.5 px-2 rounded-lg bg-blue-600 shadow-inner shadow-black/50 flex items-center justify-center"
+              onClick={handleSearch}
+              disabled={streaming || datePickerValue.to === undefined}
+            >
+              {streaming ? (
+                <>
+                  <Circles className="w-4 h-4 mr-2" />
+                  generating
+                </>
+              ) : (
+                <>
+                  <IoSearchOutline className="w-4 h-4 mr-1" />
+                  search
+                </>
+              )}
+            </button>
+          ) : (
+            <button
+              className="py-0.5 px-2 rounded-lg bg-blue-600 shadow-inner shadow-black/50 flex items-center justify-center"
+              onClick={() => handleSearch({ regenerate: true })}
+              disabled={streaming || datePickerValue.to === undefined}
+            >
+              <IoRefresh className="w-4 h-4 mr-1" />
+              regenerate
+            </button>
+          )}
+          {/* {inputChanged && !streaming && (
+            <span className="ml-2 text-indigo-500 font-bold">ˎˊ˗</span>
+          )} */}
         </div>
       </div>
       <div className="pb-24">
@@ -207,7 +266,7 @@ const Reflect = () => {
           <div className="flex flex-col min-h-[20rem] justify-start items-start bg-zinc-900/80 border border-zinc-800/60 rounded-xl px-4 pt-4 markdown text-zinc-400 font-workSans">
             <Markdown>{streaming ? completion : reflection}</Markdown>
           </div>
-        ) : !last7DaysReflection ? (
+        ) : !last7DaysReflection && selectType === "last7Days" ? (
           <div className="flex flex-col h-80 gap-y-2 justify-start items-start bg-zinc-900/80 border border-zinc-800/60 rounded-xl p-6">
             <div className="w-8/12 h-4 bg-zinc-800 rounded-lg animate-pulse"></div>
             <div className="w-7/12 h-4 bg-zinc-800 rounded-lg animate-pulse"></div>

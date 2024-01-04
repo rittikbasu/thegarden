@@ -41,5 +41,5 @@ export function getShortFormattedDate(created_at) {
 }
 
 export function dateToLocale(dateObj) {
-  return dateObj.toLocaleDateString("en-CA");
+  return dateObj?.toLocaleDateString("en-CA");
 }
