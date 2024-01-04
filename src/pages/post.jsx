@@ -68,7 +68,8 @@ const Post = ({ previousPath }) => {
         text: text,
         images: images,
       });
-      router.push("/");
+      const timestamp = encodeURIComponent(new Date().toISOString());
+      router.push("/?timestamp=" + timestamp);
     } catch (error) {
       console.error("Failed to send note to API:", error);
     }
