@@ -36,7 +36,7 @@ const NoteCard = ({
         <div className="flex items-center">
           <div className="bg-zinc-900/80 border border-zinc-800/60 rounded-3xl w-full">
             <div className="p-4 text-white text-sm">
-              <p className="line-clamp-3 font-workSans tracking-wider">
+              <p className="line-clamp-3 tracking-wider">
                 {content.toLowerCase()}
               </p>
             </div>

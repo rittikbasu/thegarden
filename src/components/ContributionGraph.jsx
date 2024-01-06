@@ -75,7 +75,7 @@ const ContributionGraph = () => {
 
   return (
     <div className="pb-8">
-      <p className="flex justify-between text-sm mx-2 font-workSans text-zinc-400">
+      <p className="flex justify-between text-sm mx-2 text-zinc-400">
         <span>this month: {postsThisMonth}</span>
         <span>total: {totalPosts}</span>
       </p>

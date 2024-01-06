@@ -129,7 +129,7 @@ const Post = ({ previousPath }) => {
           onChange={handleTextChange}
           ref={textAreaRef}
           autoFocus
-          className="flex-1 w-full font-workSans p-4 focus:outline-none bg-transparent resize-none"
+          className="flex-1 w-full p-4 focus:outline-none bg-transparent resize-none"
           placeholder="what's are you thinking?"
         ></textarea>
         {images.length !== 0 && (

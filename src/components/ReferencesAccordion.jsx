@@ -37,7 +37,7 @@ const ReferencesAccordion = ({ metadata }) => {
           isOpen ? "max-h-full" : "max-h-0"
         }`}
       >
-        <div className="text-zinc-500 text-sm font-workSans">
+        <div className="text-zinc-500 text-sm">
           <p className="mx-1 pb-2">
             notes are ranked by relevance, the scores are indicated alongside
           </p>

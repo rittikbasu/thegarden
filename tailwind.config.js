@@ -10,8 +10,8 @@ module.exports = {
     current: "currentColor",
     extend: {
       fontFamily: {
-        sans: ["var(--font-poppins)"],
-        workSans: ["var(--font-work-sans)"],
+        sans: ["var(--font-work-sans)"],
+        poppins: ["var(--font-poppins)"],
       },
       animation: {
         cursorblink: "blink 1s step-end infinite",

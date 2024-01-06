@@ -5,7 +5,7 @@ import { GiOrangeSlice } from "react-icons/gi";
 import { MdOutlineManageAccounts } from "react-icons/md";
 
 const Header = ({ path }) => (
-  <header className="mb-12 pt-6 flex justify-between items-center">
+  <header className="mb-12 pt-6 font-poppins flex justify-between items-center">
     <h1 className="text-3xl font-semibold">
       the garden <GiOrangeSlice className="inline-block w-6 h-6" />
     </h1>
