@@ -22,8 +22,8 @@ const NoteCard = ({
       {index !== 0 && showLine && (
         <div
           className={clsx(
-            "absolute h-12 border-l left-1/2 transform -translate-x-1/2 -top-12",
-            date === prevDate ? "border-orange-500" : "border-zinc-600"
+            "absolute h-12 border-l border-orange-500 left-1/2 transform -translate-x-1/2 -top-12",
+            date === prevDate ? "border-dashed" : "border-solid"
           )}
         ></div>
       )}
