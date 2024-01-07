@@ -5,8 +5,9 @@ import { db } from "@/utils/db";
 import { useLiveQuery } from "dexie-react-hooks";
 import { DateRangePicker, DateRangePickerItem } from "@tremor/react";
 import Markdown from "react-markdown";
-import { IoSearchOutline, IoRefresh } from "react-icons/io5";
-import { Circles } from "svg-loaders-react";
+
+import SearchButton from "@/components/SearchButton";
+import Skeleton from "@/components/Skeleton";
 import { createMessages } from "@/utils/createMessages";
 import { dateToLocale } from "@/utils/formatNotes";
 
@@ -61,10 +62,13 @@ const Reflect = () => {
 
   const handleDatePickerChange = (value) => {
     console.log(value);
+
+    if (value?.selectValue === selectType) return;
+
     setReflection("");
     setDatePickerValue(value);
     setInputChanged(true);
-
+    console.log("select value changed");
     const dateRanges = {
       last7Days: last7Days,
       last30Days: last30Days,
@@ -85,7 +89,6 @@ const Reflect = () => {
       }
 
       setSelectType(selectValue);
-      console.log(selectValue);
       selectValue &&
         setDatePickerValue((prev) => ({
           ...prev,
@@ -180,7 +183,7 @@ const Reflect = () => {
       <Head>
         <title>reflect - the garden</title>
       </Head>
-      <p className="ml-1 pb-1 text-sm font-workSans text-gray-500">
+      <p className="ml-1 pb-1 text-sm text-gray-500">
         reflect on your notes by selecting a date
       </p>
       <div className="flex flex-col justify-center items-center pb-8 gap-x-2">
@@ -188,7 +191,6 @@ const Reflect = () => {
           className="md:max-w-md mx-auto flex justify-center items-center"
           value={datePickerValue}
           onValueChange={handleDatePickerChange}
-          selectPlaceholder="select"
           // defaultValue={{
           //   selectValue: selectType,
           //   from: last7Days.from,
@@ -224,76 +226,24 @@ const Reflect = () => {
             all time
           </DateRangePickerItem>
         </DateRangePicker>
-        <div className="flex items-center justify-end w-full mt-4 font-workSans">
-          {/* {inputChanged && !streaming && (
-            <span className="mr-2 text-indigo-500 font-bold">˗ˏˋ</span>
-          )} */}
-          {reflection === "" ? (
-            <button
-              className="py-0.5 px-2 rounded-lg bg-blue-600 shadow-inner shadow-black/50 flex items-center justify-center"
-              onClick={handleSearch}
-              disabled={streaming || datePickerValue.to === undefined}
-            >
-              {streaming ? (
-                <>
-                  <Circles className="w-4 h-4 mr-2" />
-                  generating
-                </>
-              ) : (
-                <>
-                  <IoSearchOutline className="w-4 h-4 mr-1" />
-                  search
-                </>
-              )}
-            </button>
-          ) : (
-            <button
-              className="py-0.5 px-2 rounded-lg bg-blue-600 shadow-inner shadow-black/50 flex items-center justify-center"
-              onClick={() => handleSearch({ regenerate: true })}
-              disabled={streaming || datePickerValue.to === undefined}
-            >
-              <IoRefresh className="w-4 h-4 mr-1" />
-              regenerate
-            </button>
-          )}
-          {/* {inputChanged && !streaming && (
-            <span className="ml-2 text-indigo-500 font-bold">ˎˊ˗</span>
-          )} */}
+        <div className="flex items-center justify-end w-full mt-4">
+          <SearchButton
+            streaming={streaming}
+            handleSearch={handleSearch}
+            searchResult={reflection}
+            disabled={streaming || datePickerValue.to === undefined}
+          />
         </div>
       </div>
       <div className="pb-24">
         {reflection !== "" || streaming ? (
-          <div className="flex flex-col min-h-[20rem] justify-start items-start bg-zinc-900/80 border border-zinc-800/60 rounded-xl px-4 pt-4 markdown text-zinc-400 font-workSans">
+          <div className="flex flex-col min-h-[20rem] justify-start items-start bg-zinc-900/80 border border-zinc-800/60 rounded-xl px-4 pt-4 markdown text-zinc-400">
             <Markdown>{streaming ? completion : reflection}</Markdown>
           </div>
         ) : !last7DaysReflection && selectType === "last7Days" ? (
-          <div className="flex flex-col h-80 gap-y-2 justify-start items-start bg-zinc-900/80 border border-zinc-800/60 rounded-xl p-6">
-            <div className="w-8/12 h-4 bg-zinc-800 rounded-lg animate-pulse"></div>
-            <div className="w-7/12 h-4 bg-zinc-800 rounded-lg animate-pulse"></div>
-            <div className="w-8/12 h-4 bg-zinc-700 rounded-lg animate-pulse"></div>
-            <div className="w-9/12 h-4 bg-zinc-700 rounded-lg animate-pulse"></div>
-            <div className="w-11/12 h-4 bg-zinc-800 rounded-lg animate-pulse"></div>
-            <div className="w-7/12 h-4 bg-zinc-700 rounded-lg animate-pulse"></div>
-
-            <div className="w-11/12 h-4 mt-8 bg-zinc-800 rounded-lg animate-pulse"></div>
-            <div className="w-9/12 h-4 bg-zinc-700 rounded-lg animate-pulse"></div>
-            <div className="w-11/12 h-4 bg-zinc-700 rounded-lg animate-pulse"></div>
-            <div className="w-11/12 h-4 bg-zinc-800 rounded-lg animate-pulse"></div>
-          </div>
+          <Skeleton animatePulse={true} />
         ) : (
-          <div className="flex flex-col h-80 gap-y-2 justify-start items-start bg-zinc-900/80 border border-zinc-800/60 rounded-xl p-6">
-            <div className="w-8/12 h-4 bg-zinc-800 rounded-lg"></div>
-            <div className="w-7/12 h-4 bg-zinc-800 rounded-lg"></div>
-            <div className="w-8/12 h-4 bg-zinc-700 rounded-lg"></div>
-            <div className="w-9/12 h-4 bg-zinc-700 rounded-lg"></div>
-            <div className="w-11/12 h-4 bg-zinc-800 rounded-lg"></div>
-            <div className="w-7/12 h-4 bg-zinc-700 rounded-lg"></div>
-
-            <div className="w-11/12 h-4 mt-8 bg-zinc-800 rounded-lg"></div>
-            <div className="w-9/12 h-4 bg-zinc-700 rounded-lg"></div>
-            <div className="w-11/12 h-4 bg-zinc-700 rounded-lg"></div>
-            <div className="w-11/12 h-4 bg-zinc-800 rounded-lg"></div>
-          </div>
+          <Skeleton />
         )}
       </div>
     </div>
