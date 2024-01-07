@@ -6,13 +6,13 @@ import { useCompletion } from "ai/react";
 import Markdown from "react-markdown";
 
 import NotesContainer from "@/components/NotesContainer";
+import SearchButton from "@/components/SearchButton";
 import ReferencesAccordion from "@/components/ReferencesAccordion";
 import { db } from "@/utils/db";
 import { formatNotes, getFormattedDate } from "@/utils/formatNotes";
 import { createMessages } from "@/utils/createMessages";
 
 import { LuSparkles } from "react-icons/lu";
-import { IoSearchOutline } from "react-icons/io5";
 
 const Search = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -23,6 +23,7 @@ const Search = () => {
   const [streaming, setStreaming] = useState(false);
   const [referenceData, setReferenceData] = useState([]);
   const [showReferences, setShowReferences] = useState(false);
+  const [searchBtnInit, setSearchBtnInit] = useState(false);
   const lastNoteRef = useRef(null);
   const { completion, complete } = useCompletion({
     api: "/api/completion",
@@ -147,7 +148,7 @@ const Search = () => {
       <Head>
         <title>search - the garden</title>
       </Head>
-      <p className="ml-2 pb-1 text-sm font-workSans text-gray-500">
+      <p className="ml-2 pb-1 text-sm text-gray-500">
         {aiToggle
           ? "talk to your notes & find insights with ai"
           : "find your notes using characters or dates"}
@@ -159,7 +160,7 @@ const Search = () => {
             aiToggle === true
               ? "border-blue-500/80 shadow-blue-500/50"
               : "border-zinc-500/60 shadow-zinc-500/40",
-            "w-full max-w-lg rounded-xl transition-all overflow-hidden duration-700 shadow-lg bg-zinc-900/60 border flex justify-between items-center font-workSans h-[3rem]"
+            "w-full max-w-lg rounded-xl transition-all overflow-hidden duration-700 shadow-lg bg-zinc-900/60 border flex justify-between items-center h-[3rem]"
           )}
         >
           {aiToggle ? (
@@ -167,6 +168,7 @@ const Search = () => {
               value={aiSearchTerm}
               onChange={(e) => {
                 setAISearchTerm(e.target.value);
+                setSearchBtnInit(true);
               }}
               ref={textareaRef}
               onInput={adjustTextareaHeight}
@@ -175,6 +177,7 @@ const Search = () => {
               maxLength={150}
               style={{ height: "auto" }}
               rows={1}
+              disabled={streaming}
             />
           ) : (
             <input
@@ -207,14 +210,21 @@ const Search = () => {
           </label>
         </div>
         {aiToggle && (
-          <button
-            className="py-0.5 px-2 rounded-lg bg-blue-600 shadow-inner shadow-black/50 flex items-center justify-center"
-            onClick={handleAISearch}
+          // <button
+          //   className="py-0.5 px-2 rounded-lg bg-blue-600 shadow-inner shadow-black/50 flex items-center justify-center"
+          //   onClick={handleAISearch}
+          //   disabled={streaming}
+          // >
+          //   <IoSearchOutline className="w-4 h-4 mr-1" />
+          //   search
+          // </button>
+          <SearchButton
+            streaming={streaming}
+            handleSearch={handleAISearch}
+            searchResult={aiResults}
+            searchInput={searchBtnInit ? aiSearchTerm : false}
             disabled={streaming}
-          >
-            <IoSearchOutline className="w-4 h-4 mr-1" />
-            search
-          </button>
+          />
         )}
       </div>
       <div className="pb-12 pt-8">
@@ -223,7 +233,7 @@ const Search = () => {
             {(completion !== "" || aiResults !== "") && (
               <div className="flex items-center justify-center">
                 <div className="bg-zinc-900/80 border border-zinc-800/60 w-full rounded-xl flex px-4 pt-4 overflow-y-auto">
-                  <p className="text-base font-workSans text-zinc-400 markdown">
+                  <p className="text-base text-zinc-400 markdown">
                     <Markdown>{streaming ? completion : aiResults}</Markdown>
                   </p>
                 </div>
