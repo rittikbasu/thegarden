@@ -68,6 +68,7 @@ const Post = ({ previousPath }) => {
         text: text,
         images: images,
       });
+      sessionStorage.setItem("homeScrollPosition", "0");
       const timestamp = encodeURIComponent(new Date().toISOString());
       router.push("/?timestamp=" + timestamp);
     } catch (error) {
