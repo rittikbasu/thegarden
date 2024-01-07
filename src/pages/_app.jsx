@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import clsx from "clsx";
 import { VectorStorage } from "vector-storage";
 import { useCompletion } from "ai/react";
 
@@ -34,7 +35,7 @@ const workSans = Work_Sans({
 export default function App({ Component, pageProps }) {
   const router = useRouter();
   const [previousPath, setPreviousPath] = useState("");
-  const [postBtnOpacity, setPostBtnOpacity] = useState(1);
+  const [postBtnOpacity, setPostBtnOpacity] = useState("opacity-100");
   const [lastScrollTop, setLastScrollTop] = useState(0);
   const today = new Date();
   const { complete } = useCompletion({
@@ -46,9 +47,9 @@ export default function App({ Component, pageProps }) {
       const currentScrollTop =
         window.scrollY || document.documentElement.scrollTop;
       if (currentScrollTop > lastScrollTop) {
-        setPostBtnOpacity(0.3);
+        setPostBtnOpacity("opacity-30 lg:opacity-100");
       } else {
-        setPostBtnOpacity(1);
+        setPostBtnOpacity("opacity-100");
       }
       setLastScrollTop(currentScrollTop <= 0 ? 0 : currentScrollTop);
     };
@@ -173,8 +174,10 @@ export default function App({ Component, pageProps }) {
             <Header path={router.pathname} />
             <Navbar path={router.pathname} />
             <div
-              className="fixed bottom-20 right-4 z-50 md:right-1/4 xl:right-1/3 max-w-xl"
-              style={{ opacity: postBtnOpacity }}
+              className={clsx(
+                "fixed bottom-20 right-4 z-50 md:right-1/4 xl:right-1/3 max-w-xl",
+                postBtnOpacity
+              )}
             >
               {/* <Link href="/post" passHref>
                 <div className="w-14 h-14 flex items-center justify-center rounded-full bg-orange-600">
