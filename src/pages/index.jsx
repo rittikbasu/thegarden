@@ -40,6 +40,22 @@ export default function Home() {
     }
     timestamp && compareTimestampToNow();
   }, [timestamp]);
+
+  useEffect(() => {
+    let scrollTimeout;
+    if (showConfetti) {
+      document.body.style.overflow = "hidden";
+
+      scrollTimeout = setTimeout(() => {
+        document.body.style.overflow = "auto";
+      }, 2000);
+    }
+
+    return () => {
+      clearTimeout(scrollTimeout);
+      document.body.style.overflow = "auto";
+    };
+  }, [showConfetti]);
   return (
     <div className="text-gray-200">
       <Head>
