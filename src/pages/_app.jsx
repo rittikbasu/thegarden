@@ -16,7 +16,6 @@ import { createMessages } from "@/utils/createMessages";
 import "@/styles/globals.css";
 import favicon from "../../public/icon.png";
 import { Poppins, Work_Sans } from "next/font/google";
-import { IoAdd } from "react-icons/io5";
 
 const poppins = Poppins({
   display: "swap",
@@ -35,10 +34,30 @@ const workSans = Work_Sans({
 export default function App({ Component, pageProps }) {
   const router = useRouter();
   const [previousPath, setPreviousPath] = useState("");
+  const [postBtnOpacity, setPostBtnOpacity] = useState(1);
+  const [lastScrollTop, setLastScrollTop] = useState(0);
   const today = new Date();
   const { complete } = useCompletion({
     api: "/api/completion",
   });
+
+  useEffect(() => {
+    const onScroll = () => {
+      const currentScrollTop =
+        window.scrollY || document.documentElement.scrollTop;
+      if (currentScrollTop > lastScrollTop) {
+        setPostBtnOpacity(0.3);
+      } else {
+        setPostBtnOpacity(1);
+      }
+      setLastScrollTop(currentScrollTop <= 0 ? 0 : currentScrollTop);
+    };
+
+    window.addEventListener("scroll", onScroll, { passive: true });
+
+    return () => window.removeEventListener("scroll", onScroll);
+  }, [lastScrollTop]);
+
   useEffect(() => {
     const last7DaysReflection = async () => {
       const last7DaysReflectionDate = await db.reflections
@@ -153,7 +172,10 @@ export default function App({ Component, pageProps }) {
           <>
             <Header path={router.pathname} />
             <Navbar path={router.pathname} />
-            <div className="fixed bottom-20 right-4 z-50 md:right-1/4 xl:right-1/3 max-w-xl">
+            <div
+              className="fixed bottom-20 right-4 z-50 md:right-1/4 xl:right-1/3 max-w-xl"
+              style={{ opacity: postBtnOpacity }}
+            >
               {/* <Link href="/post" passHref>
                 <div className="w-14 h-14 flex items-center justify-center rounded-full bg-orange-600">
                   <IoAdd className="w-10 h-10 fill-white" />
