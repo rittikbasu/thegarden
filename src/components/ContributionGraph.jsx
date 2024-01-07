@@ -52,7 +52,7 @@ const ContributionGraph = () => {
     const postsPerDay = {};
 
     result.forEach((post) => {
-      const day = new Date(post).toISOString().split("T")[0];
+      const day = new Date(post).toLocaleDateString("en-CA");
       if (!postsPerDay[day]) {
         postsPerDay[day] = 0;
       }
@@ -82,7 +82,7 @@ const ContributionGraph = () => {
       <div className="mt-2 mb-2">
         <Calendar
           values={postsPerDay}
-          until={new Date().toISOString().split("T")[0]}
+          until={new Date().toLocaleDateString("en-CA")}
           panelColors={panelColors}
           panelAttributes={panelAttributes}
           monthNames={monthNames}
