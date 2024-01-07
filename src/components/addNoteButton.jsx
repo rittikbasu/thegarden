@@ -1,7 +1,8 @@
 import Link from "next/link";
 import { IoAdd } from "react-icons/io5";
+import clsx from "clsx";
 
-const AddNoteButton = () => {
+const AddNoteButton = ({ animate }) => {
   return (
     <Link href="/post" className="flex items-center justify-center">
       <div className="relative">
@@ -9,7 +10,10 @@ const AddNoteButton = () => {
           <IoAdd className="w-10 h-10 text-orange-500" />
         </button>
         <svg
-          className="absolute top-0 left-0 w-full h-full animate-spin-slow"
+          className={clsx(
+            "absolute top-0 left-0 w-full h-full animate-spin-slow",
+            !animate && "[animation-play-state:paused] lg:animate-spin-slow"
+          )}
           viewBox="0 0 100 100"
         >
           <path

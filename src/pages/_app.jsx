@@ -9,7 +9,7 @@ import { useCompletion } from "ai/react";
 import Header from "@/components/Header";
 import Navbar from "@/components/Navbar";
 import Particles from "@/components/Particles";
-import AddNoteButton from "@/components/addNoteButton";
+import AddNoteButton from "@/components/AddNoteButton";
 import { db } from "@/utils/db";
 import { getFormattedDate } from "@/utils/formatNotes";
 import { createMessages } from "@/utils/createMessages";
@@ -36,6 +36,7 @@ export default function App({ Component, pageProps }) {
   const router = useRouter();
   const [previousPath, setPreviousPath] = useState("");
   const [postBtnOpacity, setPostBtnOpacity] = useState("opacity-100");
+  const [postBtnAnimation, setPostBtnAnimation] = useState(true);
   const [lastScrollTop, setLastScrollTop] = useState(0);
   const today = new Date();
   const { complete } = useCompletion({
@@ -48,8 +49,10 @@ export default function App({ Component, pageProps }) {
         window.scrollY || document.documentElement.scrollTop;
       if (currentScrollTop > lastScrollTop) {
         setPostBtnOpacity("opacity-30 lg:opacity-100");
+        setPostBtnAnimation(false);
       } else {
         setPostBtnOpacity("opacity-100");
+        setPostBtnAnimation(true);
       }
       setLastScrollTop(currentScrollTop <= 0 ? 0 : currentScrollTop);
     };
@@ -184,7 +187,7 @@ export default function App({ Component, pageProps }) {
                   <IoAdd className="w-10 h-10 fill-white" />
                 </div>
               </Link> */}
-              <AddNoteButton />
+              <AddNoteButton animate={postBtnAnimation} />
             </div>
           </>
         )}
