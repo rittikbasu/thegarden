@@ -15,10 +15,19 @@ module.exports = {
       },
       animation: {
         cursorblink: "blink 1s step-end infinite",
+        "spin-slow": "spin 10s linear infinite",
       },
       keyframes: {
         blink: {
           "50%": { opacity: 0 },
+        },
+        spin: {
+          from: {
+            transform: "rotate(0deg)",
+          },
+          to: {
+            transform: "rotate(360deg)",
+          },
         },
       },
       colors: {

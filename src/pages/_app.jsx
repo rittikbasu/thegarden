@@ -8,6 +8,7 @@ import { useCompletion } from "ai/react";
 import Header from "@/components/Header";
 import Navbar from "@/components/Navbar";
 import Particles from "@/components/Particles";
+import AddNoteButton from "@/components/addNoteButton";
 import { db } from "@/utils/db";
 import { getFormattedDate } from "@/utils/formatNotes";
 import { createMessages } from "@/utils/createMessages";
@@ -153,11 +154,12 @@ export default function App({ Component, pageProps }) {
             <Header path={router.pathname} />
             <Navbar path={router.pathname} />
             <div className="fixed bottom-20 right-4 z-50 md:right-1/4 xl:right-1/3 max-w-xl">
-              <Link href="/post" passHref>
+              {/* <Link href="/post" passHref>
                 <div className="w-14 h-14 flex items-center justify-center rounded-full bg-orange-600">
                   <IoAdd className="w-10 h-10 fill-white" />
                 </div>
-              </Link>
+              </Link> */}
+              <AddNoteButton />
             </div>
           </>
         )}
