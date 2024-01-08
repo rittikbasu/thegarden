@@ -9,7 +9,7 @@ import { useCompletion } from "ai/react";
 import Header from "@/components/Header";
 import Navbar from "@/components/Navbar";
 import Particles from "@/components/Particles";
-import AddNoteButton from "@/components/AddNoteButton";
+import AddNoteButton from "@/components/addNoteButton";
 import { db } from "@/utils/db";
 import { getFormattedDate } from "@/utils/formatNotes";
 import { createMessages } from "@/utils/createMessages";
