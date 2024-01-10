@@ -15,6 +15,46 @@ import { IoClose } from "react-icons/io5";
 import { AiFillEdit } from "react-icons/ai";
 import { MdOutlineFileDownloadDone } from "react-icons/md";
 
+const OriginalView = ({
+  isEditing,
+  text,
+  editedNote,
+  highlight,
+  handleTextChange,
+  handleTextAreaFocus,
+}) => {
+  return isEditing ? (
+    <textarea
+      value={editedNote}
+      onChange={handleTextChange}
+      onFocus={handleTextAreaFocus}
+      autoFocus
+      className="bg-transparent resize-none flex-1 w-full focus:outline-none"
+      placeholder="what's are you thinking?"
+      style={{ wordSpacing: "0.2em" }}
+    ></textarea>
+  ) : (
+    <div
+      className="break-words whitespace-pre-wrap h-full overflow-y-scroll"
+      placeholder="what's are you thinking?"
+      style={{ wordSpacing: "0.2em" }}
+    >
+      {highlight ? (
+        <span
+          dangerouslySetInnerHTML={{
+            __html: text.replace(
+              new RegExp(highlight, "ig"),
+              `<span style="background-color: yellow; color: black; font-weight: bold; border-radius: 5px; padding: 0 2px; margin: 0 0.5px;">$&</span>`
+            ),
+          }}
+        />
+      ) : (
+        text
+      )}
+    </div>
+  );
+};
+
 export default function NotePage({ previousPath }) {
   const router = useRouter();
   const { id, highlight } = router.query;
@@ -29,6 +69,7 @@ export default function NotePage({ previousPath }) {
   const [showModal, setShowModal] = useState(false);
   const [showCarousel, setShowCarousel] = useState(false);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
+  const [tab, setTab] = useState("raw");
   const fileInputRef = useRef(null);
 
   async function fetchNoteData(id) {
@@ -217,37 +258,51 @@ export default function NotePage({ previousPath }) {
         <p>{date ? date.toLowerCase() : ""}</p>
         <p>{time ? time.toLowerCase() : ""}</p>
       </div>
-      <div className="flex-grow flex flex-col focus:outline-none tracking-widest font-workSans text-zinc-100 overflow-y-scroll font-light bg-zinc-900/80 border border-zinc-800/60 rounded-2xl">
-        {!isEditing ? (
-          <div
-            className="break-words whitespace-pre-wrap h-full p-4 overflow-y-scroll"
-            placeholder="what's are you thinking?"
-            style={{ wordSpacing: "0.2em" }}
-          >
-            {highlight ? (
-              <span
-                dangerouslySetInnerHTML={{
-                  __html: text.replace(
-                    new RegExp(highlight, "ig"),
-                    `<span style="background-color: yellow; color: black; font-weight: bold; border-radius: 5px; padding: 0 2px; margin: 0 0.5px;">$&</span>`
-                  ),
+      <div className="flex-grow flex flex-col focus:outline-none tracking-widest text-zinc-100 overflow-y-scroll font-light bg-zinc-900/80 border border-zinc-800/60 rounded-2xl">
+        <div>
+          <div className="flex justify-evenly">
+            <button
+              className={`py-2 px-4 font-medium ${
+                tab === "raw"
+                  ? "border-b-2 border-blue-500 text-blue-500"
+                  : "text-gray-500"
+              }`}
+              onClick={() => setTab("raw")}
+            >
+              summary
+            </button>
+            <button
+              className={`py-2 px-4 font-medium ${
+                tab === "summary"
+                  ? "border-b-2 border-blue-500 text-blue-500"
+                  : "text-gray-500"
+              }`}
+              onClick={() => setTab("summary")}
+            >
+              original
+            </button>
+          </div>
+          <div className="p-4">
+            {tab === "raw" && (
+              <div>
+                {/* Content for Raw tab */}
+                <p>Raw data view...</p>
+              </div>
+            )}
+            {tab === "summary" && (
+              <OriginalView
+                {...{
+                  isEditing,
+                  text,
+                  editedNote,
+                  highlight,
+                  handleTextChange,
+                  handleTextAreaFocus,
                 }}
               />
-            ) : (
-              text
             )}
           </div>
-        ) : (
-          <textarea
-            value={editedNote}
-            onChange={handleTextChange}
-            onFocus={handleTextAreaFocus}
-            autoFocus
-            className="bg-transparent resize-none flex-1 w-full focus:outline-none p-4"
-            placeholder="what's are you thinking?"
-            style={{ wordSpacing: "0.2em" }}
-          ></textarea>
-        )}
+        </div>
         {imageUrls && imageUrls.length !== 0 && (
           <div className="flex overflow-x-auto whitespace-nowrap gap-x-4 px-4 pt-4 pb-4">
             {imageUrls.map((image, index) => (
