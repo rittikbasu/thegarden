@@ -2,6 +2,7 @@ import { useState, useEffect, useRef, useMemo } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/router";
+import clsx from "clsx";
 
 import { db } from "@/utils/db";
 import { formatNotes } from "@/utils/formatNotes";
@@ -13,6 +14,7 @@ import { IoAddOutline } from "react-icons/io5";
 import { HiArrowLongLeft } from "react-icons/hi2";
 import { IoClose } from "react-icons/io5";
 import { AiFillEdit } from "react-icons/ai";
+import { MdDelete, MdCancel } from "react-icons/md";
 import { MdOutlineFileDownloadDone } from "react-icons/md";
 
 const OriginalView = ({
@@ -29,14 +31,13 @@ const OriginalView = ({
       onChange={handleTextChange}
       onFocus={handleTextAreaFocus}
       autoFocus
-      className="bg-transparent resize-none flex-1 w-full focus:outline-none"
+      className="bg-transparent tracking-widest scrollbar-hide resize-none flex-1 w-full focus:outline-none"
       placeholder="what's are you thinking?"
-      style={{ wordSpacing: "0.2em" }}
+      style={{ wordSpacing: "0.2em", height: "100%" }}
     ></textarea>
   ) : (
     <div
-      className="break-words whitespace-pre-wrap h-full overflow-y-scroll"
-      placeholder="what's are you thinking?"
+      className="break-words whitespace-pre-wrap h-full"
       style={{ wordSpacing: "0.2em" }}
     >
       {highlight ? (
@@ -69,7 +70,6 @@ export default function NotePage({ previousPath }) {
   const [showModal, setShowModal] = useState(false);
   const [showCarousel, setShowCarousel] = useState(false);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
-  const [tab, setTab] = useState("raw");
   const fileInputRef = useRef(null);
 
   async function fetchNoteData(id) {
@@ -200,111 +200,93 @@ export default function NotePage({ previousPath }) {
       ? previousPath
       : "/";
   return (
-    <div className="flex flex-col h-screen pb-4">
-      <div className="flex items-center justify-between gap-x-4 pt-8 pb-2">
-        {isEditing ? (
-          <button
-            className="text-zinc-400"
-            onClick={handleImageBtnClick}
-            type="button"
-          >
-            <div className="flex items-center justify-center">
-              <IoAddOutline className="w-5 h-5 mr-1" />
-              <span>images</span>
-              <input
-                type="file"
-                accept="image/*"
-                multiple
-                onChange={handleImageChange}
-                className="hidden focus:outline-none outline-none"
-                ref={fileInputRef}
-              />
-            </div>
-          </button>
-        ) : (
-          <Link href={linkPath} passHref>
-            <div className="text-orange-500 flex items-center justify-center">
-              <div className="flex items-center justify-center">
-                <HiArrowLongLeft className="w-6 h-6 mr-2" />
-                <span>back</span>
-              </div>
-            </div>
-          </Link>
-        )}
-        <div className="flex justify-center items-center">
-          <button
-            className="text-red-500/90"
-            onClick={isEditing ? handleCancel : handleDelete}
-          >
-            {isEditing ? "cancel" : "delete"}
-          </button>
+    <div
+      className={clsx(
+        "flex flex-col h-screen py-4 bg-black/50",
+        imageUrls && imageUrls.length !== 0 ? "pb-28" : "pb-16"
+      )}
+    >
+      <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 px-4 lg:px-0 w-full max-w-md">
+        <div className="flex border border-zinc-800 rounded-xl items-center text-zinc-400 justify-between px-4 py-2">
+          {isEditing ? (
+            <>
+              <button
+                className="text-zinc-400"
+                onClick={handleImageBtnClick}
+                type="button"
+              >
+                <div className="flex items-center justify-center">
+                  <IoAddOutline className="w-5 h-5 mr-1" />
+                  <span>images</span>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    multiple
+                    onChange={handleImageChange}
+                    className="hidden focus:outline-none outline-none"
+                    ref={fileInputRef}
+                  />
+                </div>
+              </button>
+              <button
+                onClick={handleCancel}
+                className="text-red-500/80 flex items-center justify-center"
+              >
+                <MdCancel className="inline-block w-5 h-5 mr-1" />
+              </button>
+              <button
+                className="text-blue-400 flex items-center"
+                onClick={handleSave}
+              >
+                done
+                <MdOutlineFileDownloadDone className="inline-block w-5 h-5 ml-2" />
+              </button>
+            </>
+          ) : (
+            <>
+              <Link href={linkPath} passHref>
+                <div className="text-orange-500 flex items-center justify-center">
+                  <div className="flex items-center justify-center">
+                    <HiArrowLongLeft className="w-6 h-6 mr-2" />
+                    <span>back</span>
+                  </div>
+                </div>
+              </Link>
+              <button
+                onClick={handleDelete}
+                className="text-red-500/80 flex items-center justify-center"
+              >
+                <MdDelete className="inline-block w-5 h-5 mr-1" />
+              </button>
+              <button onClick={handleEdit} className="text-blue-400">
+                edit
+                <AiFillEdit className="inline-block w-5 h-5 ml-2" />
+              </button>
+            </>
+          )}
         </div>
-        {isEditing ? (
-          <button
-            className="text-blue-400 flex items-center"
-            onClick={handleSave}
-          >
-            done
-            <MdOutlineFileDownloadDone className="inline-block w-5 h-5 ml-2" />
-          </button>
-        ) : (
-          <button className="text-blue-400" onClick={handleEdit}>
-            edit
-            <AiFillEdit className="inline-block w-5 h-5 ml-2" />
-          </button>
-        )}
       </div>
-      <div className="flex items-center text-sm text-zinc-400 justify-between pt-8 pb-4 mx-2">
+      <div className="flex items-center justify-center text-sm text-zinc-400 lg:py-8 pt-2 pb-4">
         <p>{date ? date.toLowerCase() : ""}</p>
+        <p className="mx-2">•</p>
         <p>{time ? time.toLowerCase() : ""}</p>
       </div>
-      <div className="flex-grow flex flex-col focus:outline-none tracking-widest text-zinc-100 overflow-y-scroll font-light bg-zinc-900/80 border border-zinc-800/60 rounded-2xl">
-        <div>
-          <div className="flex justify-evenly">
-            <button
-              className={`py-2 px-4 font-medium ${
-                tab === "raw"
-                  ? "border-b-2 border-blue-500 text-blue-500"
-                  : "text-gray-500"
-              }`}
-              onClick={() => setTab("raw")}
-            >
-              summary
-            </button>
-            <button
-              className={`py-2 px-4 font-medium ${
-                tab === "summary"
-                  ? "border-b-2 border-blue-500 text-blue-500"
-                  : "text-gray-500"
-              }`}
-              onClick={() => setTab("summary")}
-            >
-              original
-            </button>
-          </div>
-          <div className="p-4">
-            {tab === "raw" && (
-              <div>
-                {/* Content for Raw tab */}
-                <p>Raw data view...</p>
-              </div>
-            )}
-            {tab === "summary" && (
-              <OriginalView
-                {...{
-                  isEditing,
-                  text,
-                  editedNote,
-                  highlight,
-                  handleTextChange,
-                  handleTextAreaFocus,
-                }}
-              />
-            )}
-          </div>
+
+      <div className="flex-grow flex flex-col focus:outline-none tracking-widest text-zinc-100 overflow-y-scroll scrollbar-hide font-light">
+        <div className="pb-4 h-full">
+          <OriginalView
+            {...{
+              isEditing,
+              text,
+              editedNote,
+              highlight,
+              handleTextChange,
+              handleTextAreaFocus,
+            }}
+          />
         </div>
-        {imageUrls && imageUrls.length !== 0 && (
-          <div className="flex overflow-x-auto whitespace-nowrap gap-x-4 px-4 pt-4 pb-4">
+        {imageUrls && imageUrls.length !== 0 ? (
+          <div className="flex fixed bottom-16 pt-4 whitespace-nowrap gap-x-4">
             {imageUrls.map((image, index) => (
               <div key={index} className="relative shrink-0">
                 <Image
@@ -333,13 +315,13 @@ export default function NotePage({ previousPath }) {
               setSelectedImageIndex={setSelectedImageIndex}
             />
           </div>
-        )}
+        ) : null}
+        <DeleteModal
+          isOpen={showModal}
+          onDelete={handleConfirmDelete}
+          onClose={handleCloseModal}
+        />
       </div>
-      <DeleteModal
-        isOpen={showModal}
-        onDelete={handleConfirmDelete}
-        onClose={handleCloseModal}
-      />
     </div>
   );
 }
