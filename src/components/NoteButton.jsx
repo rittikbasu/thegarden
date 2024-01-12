@@ -6,7 +6,7 @@ const AddNoteButton = ({ animate }) => {
   return (
     <Link href="/post" className="flex items-center justify-center">
       <div className="relative">
-        <button className="z-10 flex items-center justify-center p-4 rounded-full outline outline-orange-600 outline-offset-2 bg-zinc-900/90 text-2xl w-18 h-18">
+        <button className="z-10 flex items-center justify-center p-4 rounded-full outline outline-orange-600 outline-offset-2 bg-grid-small-white/[0.2] bg-black text-2xl w-18 h-18">
           <IoAdd className="w-10 h-10 text-orange-500" />
         </button>
         <svg
