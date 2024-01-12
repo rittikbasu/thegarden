@@ -207,7 +207,7 @@ export default function NotePage({ previousPath }) {
       )}
     >
       <div className="fixed top-2 left-1/2 transform -translate-x-1/2 px-4 lg:px-0 w-full max-w-md">
-        <div className="flex border border-zinc-800 rounded-xl items-center text-zinc-400 justify-between px-4 py-2">
+        <div className="flex border bg-black/50 border-zinc-800/80 rounded-xl items-center text-zinc-400 justify-between px-4 py-2">
           {isEditing ? (
             <>
               <button
