@@ -84,57 +84,57 @@ const Post = ({ previousPath }) => {
           content="initial-scale=1, maximum-scale=1, user-scalable=no"
         />
       </Head>
-      <div className="flex items-center justify-between pt-6 pb-4">
-        <Link href={linkPath} passHref>
-          <div
-            className={clsx("flex items-center justify-center text-orange-500")}
+      <div className="fixed top-2 left-1/2 transform -translate-x-1/2 px-4 lg:px-0 w-full max-w-md">
+        <div className="flex border bg-black/80 shadow-md shadow-zinc-900 border-zinc-800/80 rounded-xl items-center text-zinc-400 justify-between px-4 py-2">
+          <Link href={linkPath} passHref>
+            <div
+              className={clsx(
+                "flex items-center justify-center text-orange-500"
+              )}
+            >
+              <div className="flex items-center justify-center">
+                <HiArrowLongLeft className="w-6 h-6 mr-2" />
+                <span>back</span>
+              </div>
+            </div>
+          </Link>
+          <button
+            className="text-zinc-400 rounded-md"
+            onClick={handleImageBtnClick}
+            type="button"
           >
             <div className="flex items-center justify-center">
-              <HiArrowLongLeft className="w-6 h-6 mr-2" />
-              <span>back</span>
+              <IoAddOutline className="w-5 h-5 mr-1" />
+              <span>images</span>
+              <input
+                type="file"
+                accept="image/*"
+                multiple
+                onChange={handleImageChange}
+                className="hidden focus:outline-none outline-none"
+                ref={fileInputRef}
+              />
             </div>
-          </div>
-        </Link>
-        <button
-          className="text-zinc-400 rounded-md"
-          onClick={handleImageBtnClick}
-          type="button"
-        >
-          <div className="flex items-center justify-center">
-            <IoAddOutline className="w-5 h-5 mr-1" />
-            <span>images</span>
-            <input
-              type="file"
-              accept="image/*"
-              multiple
-              onChange={handleImageChange}
-              className="hidden focus:outline-none outline-none"
-              ref={fileInputRef}
-            />
-          </div>
-        </button>
-        <button className="text-blue-400 rounded-md" onClick={handleSubmit}>
-          <div className="flex items-center justify-center">
-            <span>post</span>
-            <HiArrowLongRight className="w-6 h-6 ml-2" />
-          </div>
-        </button>
+          </button>
+          <button className="text-blue-400 rounded-md" onClick={handleSubmit}>
+            <div className="flex items-center justify-center">
+              <span>post</span>
+              <HiArrowLongRight className="w-6 h-6 ml-2" />
+            </div>
+          </button>
+        </div>
       </div>
-      <div
-        className={clsx(
-          "flex-grow bg-zinc-900/80 border border-zinc-800/60 rounded-2xl flex flex-col"
-        )}
-      >
+      <div className={clsx("flex-grow flex flex-col lg:mx-2 pt-14 pb-4")}>
         <textarea
           value={text}
           onChange={handleTextChange}
           ref={textAreaRef}
           autoFocus
-          className="flex-1 w-full p-4 focus:outline-none bg-transparent resize-none"
+          className="flex-1 w-full py-4 focus:outline-none bg-transparent resize-none"
           placeholder="what's are you thinking?"
         ></textarea>
         {images.length !== 0 && (
-          <div className="flex overflow-x-auto whitespace-nowrap gap-x-4 px-4 py-2.5">
+          <div className="flex overflow-x-auto whitespace-nowrap gap-x-4 py-2.5">
             {imageUrls.map((imageUrl, index) => (
               <div key={index} className="relative shrink-0">
                 <Image
