@@ -238,7 +238,7 @@ const Reflect = () => {
       <div className="pb-24">
         {reflection !== "" || streaming ? (
           <div className="border px-2 h-full bg-black border-zinc-800/80 rounded-xl ">
-            <div className="w-full px-2 bg-black bg-grid-small-white/[0.3] relative flex items-center justify-center">
+            <div className="w-full px-2 bg-black bg-grid-small-white/[0.2] relative flex items-center justify-center">
               <div className="absolute pointer-events-none inset-0 flex items-center justify-center bg-black [mask-image:radial-gradient(ellipse_at_center,transparent_30%,black)]"></div>
               <div className="flex z-10 min-h-[20rem] flex-col justify-start items-start rounded-xl pt-4 markdown text-zinc-400">
                 <Markdown>{streaming ? completion : reflection}</Markdown>
