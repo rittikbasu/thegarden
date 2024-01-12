@@ -28,7 +28,7 @@ const Skeleton = ({ animatePulse = false }) => {
               })}
             ></div>
             <div
-              className={clsx("w-full h-4 bg-zinc-900 rounded-lg", {
+              className={clsx("w-11/12 h-4 bg-zinc-900 rounded-lg", {
                 "animate-pulse": animatePulse,
               })}
             ></div>
@@ -39,12 +39,9 @@ const Skeleton = ({ animatePulse = false }) => {
             ></div>
             <div className="mt-8 space-y-2">
               <div
-                className={clsx(
-                  "w-11/12 h-4 mt-8 bg-gradient-to-r from-zinc-900 via-zinc-900 to-black rounded-lg",
-                  {
-                    "animate-pulse": animatePulse,
-                  }
-                )}
+                className={clsx("w-11/12 h-4 mt-8 bg-zinc-900 rounded-lg", {
+                  "animate-pulse": animatePulse,
+                })}
               ></div>
               <div
                 className={clsx("w-9/12 h-4 bg-zinc-700 rounded-lg", {
@@ -52,20 +49,14 @@ const Skeleton = ({ animatePulse = false }) => {
                 })}
               ></div>
               <div
-                className={clsx(
-                  "w-11/12 h-4 bg-gradient-to-r from-zinc-700 via-zinc-700 to-black rounded-lg",
-                  {
-                    "animate-pulse": animatePulse,
-                  }
-                )}
+                className={clsx("w-11/12 h-4 bg-zinc-700 rounded-lg", {
+                  "animate-pulse": animatePulse,
+                })}
               ></div>
               <div
-                className={clsx(
-                  "w-11/12 h-4 bg-gradient-to-r from-zinc-900 via-zinc-900 to-black rounded-lg",
-                  {
-                    "animate-pulse": animatePulse,
-                  }
-                )}
+                className={clsx("w-full h-4 bg-zinc-900 rounded-lg", {
+                  "animate-pulse": animatePulse,
+                })}
               ></div>
             </div>
           </div>
