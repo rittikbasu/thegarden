@@ -202,11 +202,11 @@ export default function NotePage({ previousPath }) {
   return (
     <div
       className={clsx(
-        "flex flex-col h-screen py-4 bg-black/50",
-        imageUrls && imageUrls.length !== 0 ? "pb-28" : "pb-16"
+        "flex flex-col h-screen py-4",
+        imageUrls && imageUrls.length !== 0 ? "pb-16" : "pb-10"
       )}
     >
-      <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 px-4 lg:px-0 w-full max-w-md">
+      <div className="fixed top-2 left-1/2 transform -translate-x-1/2 px-4 lg:px-0 w-full max-w-md">
         <div className="flex border border-zinc-800 rounded-xl items-center text-zinc-400 justify-between px-4 py-2">
           {isEditing ? (
             <>
@@ -266,7 +266,7 @@ export default function NotePage({ previousPath }) {
           )}
         </div>
       </div>
-      <div className="flex items-center justify-center text-sm text-zinc-400 lg:py-8 pt-2 pb-4">
+      <div className="flex items-center justify-center text-sm text-zinc-400 lg:py-8 pt-14 pb-4">
         <p>{date ? date.toLowerCase() : ""}</p>
         <p className="mx-2">•</p>
         <p>{time ? time.toLowerCase() : ""}</p>
@@ -286,7 +286,7 @@ export default function NotePage({ previousPath }) {
           />
         </div>
         {imageUrls && imageUrls.length !== 0 ? (
-          <div className="flex fixed bottom-16 pt-4 whitespace-nowrap gap-x-4">
+          <div className="flex fixed bottom-4 pt-4 whitespace-nowrap gap-x-4">
             {imageUrls.map((image, index) => (
               <div key={index} className="relative shrink-0">
                 <Image

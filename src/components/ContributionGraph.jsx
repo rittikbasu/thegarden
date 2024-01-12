@@ -2,13 +2,7 @@ import React, { useState, useEffect } from "react";
 import Calendar from "react-github-contribution-calendar";
 import { db } from "@/utils/db";
 
-const panelColors = [
-  "rgba(63, 63, 70, 0.4)",
-  "#7B3F06",
-  "#AC5808",
-  "#F87D09",
-  "#fb923c",
-];
+const panelColors = ["#18181b", "#7B3F06", "#AC5808", "#F87D09", "#fb923c"];
 
 const panelAttributes = { rx: 2, ry: 2 };
 

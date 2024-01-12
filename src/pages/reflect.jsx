@@ -188,7 +188,7 @@ const Reflect = () => {
       </p>
       <div className="flex flex-col justify-center items-center pb-8 gap-x-2">
         <DateRangePicker
-          className="md:max-w-md mx-auto flex justify-center items-center"
+          className="md:max-w-md mx-auto z-50 flex justify-center items-center"
           value={datePickerValue}
           onValueChange={handleDatePickerChange}
           // defaultValue={{
@@ -237,8 +237,13 @@ const Reflect = () => {
       </div>
       <div className="pb-24">
         {reflection !== "" || streaming ? (
-          <div className="flex flex-col min-h-[20rem] justify-start items-start bg-zinc-900/80 border border-zinc-800/60 rounded-xl px-4 pt-4 markdown text-zinc-400">
-            <Markdown>{streaming ? completion : reflection}</Markdown>
+          <div className="border px-2 h-full bg-black border-zinc-800/80 rounded-xl ">
+            <div className="w-full px-2 bg-black bg-grid-small-white/[0.3] relative flex items-center justify-center">
+              <div className="absolute pointer-events-none inset-0 flex items-center justify-center bg-black [mask-image:radial-gradient(ellipse_at_center,transparent_30%,black)]"></div>
+              <div className="flex z-10 min-h-[20rem] flex-col justify-start items-start rounded-xl pt-4 markdown text-zinc-400">
+                <Markdown>{streaming ? completion : reflection}</Markdown>
+              </div>
+            </div>
           </div>
         ) : !last7DaysReflection && selectType === "last7Days" ? (
           <Skeleton animatePulse={true} />

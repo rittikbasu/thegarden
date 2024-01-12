@@ -43,23 +43,25 @@ const ReferencesAccordion = ({ metadata }) => {
           </p>
           <ol className="space-y-2 mx-2">
             {result.length > 0 &&
-              result.map((item, index) => (
-                <li className="" key={index}>
-                  <Link href={`/note?id=${item.id}`}>
-                    <span className="line-clamp-1 underline underline-offset-2">
-                      {item.text.toLowerCase()}
-                    </span>
-                    <span className="flex justify-between">
-                      <span className="text-zinc-600">
-                        {getShortFormattedDate(item.created_at)}
+              result
+                .filter((item) => item && item.id)
+                .map((item, index) => (
+                  <li className="" key={index}>
+                    <Link href={`/note?id=${item.id}`}>
+                      <span className="line-clamp-1 underline underline-offset-2">
+                        {item.text.toLowerCase()}
                       </span>
-                      <span className="text-zinc-600">
-                        {metadata[index].score}
+                      <span className="flex justify-between">
+                        <span className="text-zinc-600">
+                          {getShortFormattedDate(item.created_at)}
+                        </span>
+                        <span className="text-zinc-600">
+                          {metadata[index].score}
+                        </span>
                       </span>
-                    </span>
-                  </Link>
-                </li>
-              ))}
+                    </Link>
+                  </li>
+                ))}
           </ol>
         </div>
       </div>

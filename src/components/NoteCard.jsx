@@ -33,28 +33,25 @@ const NoteCard = ({
         }
         passHref
       >
-        <div className="flex items-center">
-          <div className="bg-zinc-900/80 border border-zinc-800/60 rounded-3xl w-full">
-            <div className="p-4 text-white text-sm">
-              <p className="line-clamp-3 tracking-wider">
+        <div className="border px-2 bg-black border-zinc-800/80 rounded-xl z-10">
+          <div className="w-full px-2 bg-black bg-grid-small-white/[0.3] relative flex items-center justify-center">
+            <div className="absolute pointer-events-none inset-0 flex items-center justify-center bg-black [mask-image:radial-gradient(ellipse_at_center,transparent_30%,black)]"></div>
+            <p className="relative z-20 py-4">
+              <span className="line-clamp-3 text-sm bg-clip-text text-transparent bg-gradient-to-b from-neutral-200 to-neutral-400">
                 {content.toLowerCase()}
-              </p>
-            </div>
-            {/* {index !== length && ( */}
-            <>
-              {date !== prevDate && (
-                <div className="flex items-center justify-center">
-                  <div className="bg-orange-500 h-4 w-4 rounded-full absolute bottom-6 z-40"></div>
-                </div>
-              )}
-              {date === prevDate && date !== nextDate && (
-                <div className="flex items-center justify-center">
-                  <div className="bg-orange-500 h-4 w-4 rounded-full absolute bottom-6 z-40"></div>
-                </div>
-              )}
-            </>
-            {/* )} */}
+              </span>
+            </p>
           </div>
+          {date !== prevDate && (
+            <div className="flex items-center justify-center">
+              <div className="bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-orange-400 via-orange-600 to-orange-700 h-4 w-4 rounded-full absolute bottom-6 z-40"></div>
+            </div>
+          )}
+          {date === prevDate && date !== nextDate && (
+            <div className="flex items-center justify-center">
+              <div className="bg-[radial-gradient(ellipse_top_right,_var(--tw-gradient-stops))] from-orange-400 via-orange-600 to-orange-700 h-4 w-4 rounded-full absolute bottom-6 z-40"></div>
+            </div>
+          )}
         </div>
       </Link>
       <div className="p-2 mx-1 text-zinc-400 text-xs flex justify-between">

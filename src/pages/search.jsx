@@ -160,7 +160,7 @@ const Search = () => {
             aiToggle === true
               ? "border-blue-500/80 shadow-blue-500/50"
               : "border-zinc-500/60 shadow-zinc-500/40",
-            "w-full max-w-lg rounded-xl transition-all overflow-hidden duration-700 shadow-lg bg-zinc-900/60 border flex justify-between items-center h-[3rem]"
+            "w-full max-w-lg rounded-xl transition-all overflow-hidden duration-700 shadow-lg bg-zinc-950/60 border flex justify-between items-center h-[3rem]"
           )}
         >
           {aiToggle ? (
@@ -231,11 +231,12 @@ const Search = () => {
         {aiToggle ? (
           <>
             {(completion !== "" || aiResults !== "") && (
-              <div className="flex items-center justify-center">
-                <div className="bg-zinc-900/80 border border-zinc-800/60 w-full rounded-xl flex px-4 pt-4 overflow-y-auto">
-                  <p className="text-base text-zinc-400 markdown">
+              <div className="border px-2 h-full bg-black border-zinc-800/80 rounded-xl ">
+                <div className="w-full px-2 bg-black bg-grid-small-white/[0.3] relative flex items-center justify-center">
+                  <div className="absolute pointer-events-none inset-0 flex items-center justify-center bg-black [mask-image:radial-gradient(ellipse_at_center,transparent_30%,black)]"></div>
+                  <div className="flex z-10 min-h-[20rem] flex-col justify-start items-start rounded-xl pt-4 markdown text-zinc-400">
                     <Markdown>{streaming ? completion : aiResults}</Markdown>
-                  </p>
+                  </div>
                 </div>
               </div>
             )}{" "}

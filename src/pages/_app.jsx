@@ -165,32 +165,37 @@ export default function App({ Component, pageProps }) {
       <Head>
         <link rel="icon" href={favicon.src} />
       </Head>
-      <Particles
+      {/* <Particles
         className="absolute inset-0 -z-10 animate-fade-in"
         quantity={200}
         // key={router.pathname}
-      />
-      {router.pathname !== "/post" &&
-        !router.pathname.startsWith("/notes") &&
-        !router.pathname.startsWith("/note") && (
-          <>
-            <Header path={router.pathname} />
-            <Navbar path={router.pathname} />
-            <div
-              className={clsx(
-                "fixed bottom-20 right-4 z-50 md:right-1/4 xl:right-1/3 max-w-xl",
-                postBtnOpacity
-              )}
-            >
-              {/* <Link href="/post" passHref>
+      /> */}
+      {router.pathname !== "/post" && !router.pathname.startsWith("/note") ? (
+        <>
+          <div className="min-h-screen fixed inset-0 -z-10 w-full bg-black  dark:bg-dot-white/[0.2] bg-dot-black/[0.2] flex items-center justify-center">
+            <div className="absolute pointer-events-none inset-0 flex items-center justify-center bg-zinc-950 [mask-image:radial-gradient(ellipse_at_center,transparent_30%,black)]"></div>
+          </div>
+          <Header path={router.pathname} />
+          <Navbar path={router.pathname} />
+          <div
+            className={clsx(
+              "fixed bottom-20 right-4 z-50 md:right-1/4 xl:right-1/3 max-w-xl",
+              postBtnOpacity
+            )}
+          >
+            {/* <Link href="/post" passHref>
                 <div className="w-14 h-14 flex items-center justify-center rounded-full bg-orange-600">
                   <IoAdd className="w-10 h-10 fill-white" />
                 </div>
               </Link> */}
-              <AddNoteButton animate={postBtnAnimation} />
-            </div>
-          </>
-        )}
+            <AddNoteButton animate={postBtnAnimation} />
+          </div>
+        </>
+      ) : (
+        <div className="min-h-screen fixed inset-0 -z-10 w-full bg-black  dark:bg-grid-small-white/[0.2] bg-dot-black/[0.2] flex items-center justify-center">
+          <div className="absolute pointer-events-none inset-0 flex items-center justify-center bg-zinc-950 [mask-image:radial-gradient(ellipse_at_center,transparent_30%,black)]"></div>
+        </div>
+      )}
       <Component {...pageProps} previousPath={previousPath} />
     </div>
   );
