@@ -46,7 +46,7 @@ body {
 .markdown h3 {
   font-weight: 500;
   text-decoration: underline;
-  text-decoration-color: rgb(255, 140, 0);
+  text-decoration-color: #ea580c;
   text-underline-offset: 0.2em;
   margin-bottom: 1rem;
 }
