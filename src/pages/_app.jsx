@@ -172,7 +172,7 @@ export default function App({ Component, pageProps }) {
       /> */}
       {router.pathname !== "/post" && !router.pathname.startsWith("/note") ? (
         <>
-          <div className="min-h-screen fixed inset-0 -z-10 w-full bg-black  dark:bg-dot-white/[0.2] bg-dot-black/[0.2] flex items-center justify-center">
+          <div className="min-h-screen fixed inset-0 -z-10 w-full bg-black bg-dot-white/[0.2] flex items-center justify-center">
             <div className="absolute pointer-events-none inset-0 flex items-center justify-center bg-zinc-950 [mask-image:radial-gradient(ellipse_at_center,transparent_30%,black)]"></div>
           </div>
           <Header path={router.pathname} />
@@ -192,7 +192,7 @@ export default function App({ Component, pageProps }) {
           </div>
         </>
       ) : (
-        <div className="min-h-screen fixed inset-0 -z-10 w-full bg-black  dark:bg-grid-small-white/[0.2] bg-dot-black/[0.2] flex items-center justify-center">
+        <div className="min-h-screen fixed inset-0 -z-10 w-full bg-black  bg-grid-small-white/[0.2] flex items-center justify-center">
           <div className="absolute pointer-events-none inset-0 flex items-center justify-center bg-zinc-950 [mask-image:radial-gradient(ellipse_at_center,transparent_30%,black)]"></div>
         </div>
       )}
