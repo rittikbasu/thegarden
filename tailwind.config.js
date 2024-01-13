@@ -77,6 +77,17 @@ module.exports = {
         "tremor-metric": ["1.875rem", { lineHeight: "2.25rem" }],
       },
     },
+    screens: {
+      sm: "500px",
+
+      tab: "518px",
+
+      md: "768px",
+
+      lg: "1024px",
+
+      xl: "1280px",
+    },
   },
   safelist: [
     {
