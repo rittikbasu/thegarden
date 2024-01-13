@@ -100,21 +100,21 @@ const ContributionGraph = () => {
           weekNames={weekNames}
           weekLabelAttributes={weekLabelAttributes}
         />
-        <div className="flex items-center text-zinc-400 justify-end mt-2 md:mr-4 mr-2">
-          <span className="text-xs">less</span>
-          <div className="flex mx-2">
-            {panelColors.map((color, index) => (
-              <div
-                key={index}
-                style={{ backgroundColor: color }}
-                className={`w-3 h-3 rounded-sm ${
-                  index < panelColors.length - 1 ? "mr-1" : ""
-                }`}
-              ></div>
-            ))}
-          </div>
-          <span className="text-xs">more</span>
+      </div>
+      <div className="flex items-center text-zinc-400 justify-end mt-2 md:mr-4 mr-2">
+        <span className="text-xs">less</span>
+        <div className="flex mx-2">
+          {panelColors.map((color, index) => (
+            <div
+              key={index}
+              style={{ backgroundColor: color }}
+              className={`w-3 h-3 rounded-sm ${
+                index < panelColors.length - 1 ? "mr-1" : ""
+              }`}
+            ></div>
+          ))}
         </div>
+        <span className="text-xs">more</span>
       </div>
     </div>
   );
