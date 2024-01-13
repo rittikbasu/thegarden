@@ -160,7 +160,7 @@ const Search = () => {
             aiToggle === true
               ? "border-blue-500/80 shadow-blue-500/50"
               : "border-zinc-600/60 shadow-none",
-            "w-full max-w-lg rounded-xl transition-all overflow-hidden duration-700 shadow-lg bg-zinc-950/60 border flex justify-between items-center h-[3rem]"
+            "w-full max-w-lg rounded-xl transition-all bg-grid-small-white/[0.1] bg-black overflow-hidden duration-700 shadow-lg border flex justify-between items-center h-[3rem]"
           )}
         >
           {aiToggle ? (
