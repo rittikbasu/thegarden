@@ -114,7 +114,7 @@ const Reflect = () => {
         .toArray();
       if (
         storedReflection.length !== 0 &&
-        storedReflection[0].date === today.toLocaleDateString("en-CA")
+        storedReflection[0].date === dateToLocale(today)
       ) {
         setReflection(storedReflection[0].text);
         return;
@@ -231,7 +231,7 @@ const Reflect = () => {
             streaming={streaming}
             handleSearch={handleSearch}
             searchResult={reflection}
-            disabled={streaming || datePickerValue.to === undefined}
+            disabled={streaming || datePickerValue.from === undefined}
           />
         </div>
       </div>
