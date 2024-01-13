@@ -48,10 +48,7 @@ const Reflect = () => {
       .equals("last7Days")
       .toArray()
       .then((result) => {
-        if (
-          result.length === 0 ||
-          result[0].date !== today.toLocaleDateString("en-CA")
-        )
+        if (result.length === 0 || result[0].date !== dateToLocale(today))
           return "";
         if (selectType === "last7Days") {
           setReflection(result[0].text);
@@ -148,7 +145,7 @@ const Reflect = () => {
       if (selectType) {
         db.reflections.put({
           type: selectType,
-          date: today.toLocaleDateString("en-CA"),
+          date: dateToLocale(today),
           text: response,
         });
       }

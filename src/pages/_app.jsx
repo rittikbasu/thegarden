@@ -11,7 +11,7 @@ import Navbar from "@/components/Navbar";
 import Particles from "@/components/Particles";
 import AddNoteButton from "@/components/NoteButton";
 import { db } from "@/utils/db";
-import { getFormattedDate } from "@/utils/formatNotes";
+import { getFormattedDate, dateToLocale } from "@/utils/formatNotes";
 import { createMessages } from "@/utils/createMessages";
 
 import "@/styles/globals.css";
@@ -70,7 +70,7 @@ export default function App({ Component, pageProps }) {
         .toArray();
       if (
         last7DaysReflectionDate.length !== 0 &&
-        last7DaysReflectionDate[0].date === today.toLocaleDateString("en-CA")
+        last7DaysReflectionDate[0].date === dateToLocale(today)
       )
         return;
       const sevenDaysAgo = new Date(today);
@@ -87,7 +87,7 @@ export default function App({ Component, pageProps }) {
         complete({ messages }).then((response) => {
           db.reflections.put({
             type: "last7Days",
-            date: today.toLocaleDateString("en-CA"),
+            date: dateToLocale(today),
             text: response,
           });
         });
