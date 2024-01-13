@@ -170,31 +170,22 @@ export default function App({ Component, pageProps }) {
         quantity={200}
         // key={router.pathname}
       /> */}
-      {router.pathname !== "/post" && !router.pathname.startsWith("/note") ? (
+      <div className="min-h-screen fixed inset-0 -z-10 w-full bg-black bg-grid-white/[0.07] flex items-center justify-center">
+        <div className="absolute pointer-events-none inset-0 flex items-center justify-center bg-zinc-950 [mask-image:radial-gradient(ellipse_at_center,transparent_30%,black)]"></div>
+      </div>
+      {router.pathname !== "/post" && !router.pathname.startsWith("/note") && (
         <>
-          <div className="min-h-screen fixed inset-0 -z-10 w-full bg-black bg-dot-white/[0.2] flex items-center justify-center">
-            <div className="absolute pointer-events-none inset-0 flex items-center justify-center bg-zinc-950 [mask-image:radial-gradient(ellipse_at_center,transparent_30%,black)]"></div>
-          </div>
           <Header path={router.pathname} />
           <Navbar path={router.pathname} />
           <div
             className={clsx(
-              "fixed bottom-20 right-4 z-50 md:right-1/4 xl:right-1/3 max-w-xl",
+              "fixed bottom-20 right-4 z-50 tab:right-[5%] md:right-[10%] lg:right-[20%] xl:right-[28%] max-w-xl",
               postBtnOpacity
             )}
           >
-            {/* <Link href="/post" passHref>
-                <div className="w-14 h-14 flex items-center justify-center rounded-full bg-orange-600">
-                  <IoAdd className="w-10 h-10 fill-white" />
-                </div>
-              </Link> */}
             <AddNoteButton animate={postBtnAnimation} />
           </div>
         </>
-      ) : (
-        <div className="min-h-screen fixed inset-0 -z-10 w-full bg-black  bg-grid-small-white/[0.1] flex items-center justify-center">
-          <div className="absolute pointer-events-none inset-0 flex items-center justify-center bg-zinc-950 [mask-image:radial-gradient(ellipse_at_center,transparent_10%,black)]"></div>
-        </div>
       )}
       <Component {...pageProps} previousPath={previousPath} />
     </div>
