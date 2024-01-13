@@ -207,7 +207,7 @@ export default function NotePage({ previousPath }) {
       )}
     >
       <div className="fixed top-2 left-1/2 transform -translate-x-1/2 px-4 lg:px-0 w-full max-w-md">
-        <div className="flex border bg-black/80 shadow-md shadow-zinc-900 border-zinc-800/80 rounded-xl items-center text-zinc-400 justify-between px-4 py-2">
+        <div className="flex border bg-black/80 bg-grid-small-white/[0.1] border-zinc-800/80 rounded-xl items-center text-zinc-400 justify-between px-4 py-2">
           {isEditing ? (
             <>
               <button
@@ -266,7 +266,7 @@ export default function NotePage({ previousPath }) {
           )}
         </div>
       </div>
-      <div className="flex items-center justify-center text-sm text-zinc-400 lg:py-8 pt-14 pb-4">
+      <div className="flex items-center justify-center text-sm text-zinc-400 pt-14 pb-4">
         <p>{date ? date.toLowerCase() : ""}</p>
         <p className="mx-2">•</p>
         <p>{time ? time.toLowerCase() : ""}</p>

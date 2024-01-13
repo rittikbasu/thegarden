@@ -84,8 +84,8 @@ const Post = ({ previousPath }) => {
           content="initial-scale=1, maximum-scale=1, user-scalable=no"
         />
       </Head>
-      <div className="fixed top-2 left-1/2 transform -translate-x-1/2 px-4 lg:px-0 w-full max-w-md">
-        <div className="flex border bg-black/80 shadow-md shadow-zinc-900 border-zinc-800/80 rounded-xl items-center text-zinc-400 justify-between px-4 py-2">
+      <div className="fixed top-2 left-1/2 transform -translate-x-1/2 px-4 md:px-0 w-full max-w-md">
+        <div className="flex border bg-black/80 bg-grid-small-white/[0.1] border-zinc-800/80 rounded-xl items-center text-zinc-400 justify-between px-4 py-2">
           <Link href={linkPath} passHref>
             <div
               className={clsx(
@@ -124,7 +124,7 @@ const Post = ({ previousPath }) => {
           </button>
         </div>
       </div>
-      <div className={clsx("flex-grow flex flex-col lg:mx-2 pt-14 pb-4")}>
+      <div className={clsx("flex-grow flex flex-col md:mx-2 pt-14 pb-4")}>
         <textarea
           value={text}
           onChange={handleTextChange}
