@@ -8,8 +8,6 @@ const SearchButton = ({
   searchResult,
   searchInput = false,
 }) => {
-  console.log("searchInput", searchInput);
-
   const handleClick = () => {
     if (searchResult !== "") {
       handleSearch({ regenerate: true });
