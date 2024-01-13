@@ -5,7 +5,7 @@ const Skeleton = ({ animatePulse = false }) => {
     <>
       <div className="border px-2 bg-black border-zinc-800/80 rounded-xl z-10">
         <div className="w-full bg-black bg-grid-small-white/[0.2] relative flex items-center">
-          <div className="absolute pointer-events-none inset-0 flex items-center bg-black [mask-image:radial-gradient(ellipse_at_center,transparent_30%,black)]"></div>
+          <div className="absolute pointer-events-none inset-0 flex items-center bg-black [mask-image:radial-gradient(ellipse_at_center,transparent_0%,black)]"></div>
           <div className="relative z-20 py-8 px-4 space-y-2 w-full">
             <div
               className={clsx("w-8/12 h-4 bg-zinc-900 rounded-lg", {
