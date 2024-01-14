@@ -36,6 +36,11 @@ module.exports = {
             transform: "rotate(360deg)",
           },
         },
+        shimmer: {
+          "100%": {
+            transform: "translateX(100%)",
+          },
+        },
       },
       colors: {
         // dark mode
