@@ -120,6 +120,7 @@ const Reflect = () => {
 
     let result;
     if (datePickerValue.to) {
+      console.log(datePickerValue.to.toISOString().split("T")[0]);
       result = await db.notes
         .where("created_at")
         .between(
@@ -185,7 +186,7 @@ const Reflect = () => {
       </p>
       <div className="flex flex-col justify-center items-center pb-8 gap-x-2">
         <DateRangePicker
-          className="md:max-w-md mx-auto z-50 flex justify-center items-center"
+          className="tab:max-w-md mx-auto z-50 flex justify-center items-center"
           value={datePickerValue}
           onValueChange={handleDatePickerChange}
           // defaultValue={{
@@ -234,16 +235,16 @@ const Reflect = () => {
       </div>
       <div className="pb-24">
         {reflection !== "" || streaming ? (
-          <div className="border px-2 h-full bg-black border-zinc-800/80 rounded-xl ">
+          <div className="border h-full bg-black border-zinc-800/80 rounded-xl overflow-hidden">
             <div className="w-full px-2 bg-black bg-grid-small-white/[0.2] relative flex items-center justify-center">
               <div className="absolute pointer-events-none inset-0 flex items-center justify-center bg-black [mask-image:radial-gradient(ellipse_at_center,transparent_30%,black)]"></div>
-              <div className="flex z-10 min-h-[20rem] flex-col justify-start items-start rounded-xl pt-4 markdown text-zinc-400">
+              <div className="flex z-10 min-h-[20rem] flex-col justify-start items-start rounded-xl pt-4 px-2 markdown text-zinc-400">
                 <Markdown>{streaming ? completion : reflection}</Markdown>
               </div>
             </div>
           </div>
         ) : !last7DaysReflection && selectType === "last7Days" ? (
-          <Skeleton animatePulse={true} />
+          <Skeleton animate={true} />
         ) : (
           <Skeleton />
         )}

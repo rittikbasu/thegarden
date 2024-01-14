@@ -33,14 +33,14 @@ const NoteCard = ({
         }
         passHref
       >
-        <div className="border px-2 bg-black border-zinc-800/80 rounded-xl z-10">
+        <div className="border overflow-hidden bg-black border-zinc-800/80 rounded-xl">
           <div className="w-full px-2 bg-black bg-grid-small-white/[0.2] relative flex items-center justify-center">
             <div className="absolute pointer-events-none inset-0 flex items-center justify-center bg-black [mask-image:radial-gradient(ellipse_at_center,transparent_30%,black)]"></div>
-            <p className="relative z-20 py-4">
-              <span className="line-clamp-3 text-sm bg-clip-text text-transparent bg-gradient-to-b from-neutral-200 to-neutral-400">
+            <div className="relative z-20 py-4 px-2">
+              <p className="line-clamp-3 text-sm bg-clip-text text-transparent bg-gradient-to-b from-neutral-200 to-neutral-400">
                 {content.toLowerCase()}
-              </span>
-            </p>
+              </p>
+            </div>
           </div>
           {date !== prevDate && (
             <div className="flex items-center justify-center">
