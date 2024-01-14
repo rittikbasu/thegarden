@@ -203,7 +203,7 @@ export default function NotePage({ previousPath }) {
     <div
       className={clsx(
         "flex flex-col h-screen py-4",
-        imageUrls && imageUrls.length !== 0 ? "pb-16" : "pb-10"
+        imageUrls && imageUrls.length !== 0 ? "pb-20" : "pb-10"
       )}
     >
       <div className="fixed top-2 left-1/2 transform -translate-x-1/2 px-4 lg:px-0 w-full max-w-md">
