@@ -1,5 +1,6 @@
 import Head from "next/head";
 import { useState, useEffect } from "react";
+import clsx from "clsx";
 import { useCompletion } from "ai/react";
 import { db } from "@/utils/db";
 import { useLiveQuery } from "dexie-react-hooks";
@@ -69,7 +70,6 @@ const Reflect = () => {
 
   const handleDatePickerChange = (value) => {
     if (value?.selectValue === selectType) return;
-    if (value.to > maxDate || value.from < minDate) return;
 
     console.log(value);
     setReflection("");
@@ -145,20 +145,25 @@ const Reflect = () => {
         .toArray();
     }
     console.log("result", result);
-    const prompt = `Given below are the journal entries from ${datePickerValue.from} to ${datePickerValue.to}. Write a short and smart summary reflecting on what I've been up to with the heading "Here's a summary of what you've been up to" and provide deep insights and actionable recommendations based on these entries starting with "Here are some insights and recommendations".`;
-    const messages = createMessages(prompt, result);
-    setStreaming(true);
-    complete({ messages }).then((response) => {
-      setReflection(response);
-      setStreaming(false);
-      if (selectType) {
-        db.reflections.put({
-          type: selectType,
-          date: dateToLocale(today),
-          text: response,
-        });
-      }
-    });
+    if (result.length === 0) {
+      setReflection("no results found");
+      return;
+    } else {
+      const prompt = `Given below are the journal entries from ${datePickerValue.from} to ${datePickerValue.to}. Write a short and smart summary reflecting on what I've been up to with the heading "Here's a summary of what you've been up to" and provide deep insights and actionable recommendations based on these entries starting with "Here are some insights and recommendations".`;
+      const messages = createMessages(prompt, result);
+      setStreaming(true);
+      complete({ messages }).then((response) => {
+        setReflection(response);
+        setStreaming(false);
+        if (selectType) {
+          db.reflections.put({
+            type: selectType,
+            date: dateToLocale(today),
+            text: response,
+          });
+        }
+      });
+    }
   };
 
   const getData = async () => {
@@ -246,7 +251,14 @@ const Reflect = () => {
           <div className="border h-full bg-black border-zinc-800/80 rounded-xl overflow-hidden">
             <div className="w-full px-2 bg-black bg-grid-small-white/[0.2] relative flex items-center justify-center">
               <div className="absolute pointer-events-none inset-0 flex items-center justify-center bg-black [mask-image:radial-gradient(ellipse_at_center,transparent_30%,black)]"></div>
-              <div className="flex z-10 min-h-[20rem] flex-col justify-start items-start rounded-xl pt-4 px-2 markdown text-zinc-400">
+              <div
+                className={clsx(
+                  "flex z-10 min-h-[20rem] flex-col justify-start items-start rounded-xl pt-4 px-2 markdown text-zinc-400",
+                  reflection === "no results found"
+                    ? "justify-center"
+                    : "justify-start"
+                )}
+              >
                 <Markdown>{streaming ? completion : reflection}</Markdown>
               </div>
             </div>
