@@ -85,11 +85,11 @@ const ContributionGraph = () => {
 
   return (
     <div className="pb-8">
-      <p className="flex justify-between text-sm mx-2 text-zinc-400">
+      <p className="flex justify-between text-sm mx-1 text-zinc-400">
         <span>this month: {postsThisMonth}</span>
         <span>total: {totalPosts}</span>
       </p>
-      <div className="border border-zinc-800/80 bg-black/30 p-2 rounded-xl  mt-2 mb-2">
+      <div className="border border-zinc-800/80 bg-black/30 py-2 lg:pl-3 lg:pr-1 pl-3 rounded-xl mt-2 mb-2">
         <Calendar
           values={postsPerDay}
           until={today}
