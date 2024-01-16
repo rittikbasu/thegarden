@@ -11,6 +11,16 @@ import Skeleton from "@/components/Skeleton";
 import { createMessages } from "@/utils/createMessages";
 import { dateToLocale } from "@/utils/formatNotes";
 
+function dateToISOString(date, end = true) {
+  // if 'end' is true, it sets the time to the end of the day and vice versa
+  if (end) {
+    date.setHours(23, 59, 59, 999);
+  } else {
+    date.setHours(0, 0, 0, 0);
+  }
+  return date.toISOString();
+}
+
 const Reflect = () => {
   const today = new Date();
   // last 7 days
@@ -58,10 +68,10 @@ const Reflect = () => {
   );
 
   const handleDatePickerChange = (value) => {
-    console.log(value);
-
     if (value?.selectValue === selectType) return;
+    if (value.to > maxDate || value.from < minDate) return;
 
+    console.log(value);
     setReflection("");
     setDatePickerValue(value);
     setInputChanged(true);
@@ -120,20 +130,18 @@ const Reflect = () => {
 
     let result;
     if (datePickerValue.to) {
-      console.log(datePickerValue.to.toISOString().split("T")[0]);
+      const fromDateUTC = dateToISOString(datePickerValue.from, false);
+      const toDateUTC = dateToISOString(datePickerValue.to);
+      console.log(fromDateUTC, toDateUTC, "hehehe");
       result = await db.notes
         .where("created_at")
-        .between(
-          datePickerValue.from.toISOString().split("T")[0],
-          datePickerValue.to.toISOString().split("T")[0],
-          true,
-          true
-        )
+        .between(fromDateUTC, toDateUTC, true, true)
         .toArray();
     } else {
+      const fromDateUTC = dateToISOString(datePickerValue.from).split("T")[0];
       result = await db.notes
         .where("created_at")
-        .startsWith(datePickerValue.from.toISOString().split("T")[0])
+        .startsWith(fromDateUTC)
         .toArray();
     }
     console.log("result", result);
