@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import Head from "next/head";
-import Link from "next/link";
 import { useRouter } from "next/router";
 import clsx from "clsx";
 import { VectorStorage } from "vector-storage";
@@ -8,7 +7,6 @@ import { useCompletion } from "ai/react";
 
 import Header from "@/components/Header";
 import Navbar from "@/components/Navbar";
-import Particles from "@/components/Particles";
 import AddNoteButton from "@/components/AddNoteButton";
 import { db } from "@/utils/db";
 import { getFormattedDate, dateToLocale } from "@/utils/formatNotes";
@@ -109,15 +107,17 @@ export default function App({ Component, pageProps }) {
         .equals("false")
         .toArray();
       if (unsyncedNotes.length === 0) return;
-
+      console.log(unsyncedNotes);
       const texts = unsyncedNotes.map((note) => {
         const formattedDate = getFormattedDate(note.created_at);
         return `Date: ${formattedDate}\n${note.text}`;
       });
+      console.log(texts);
       const metadatas = unsyncedNotes.map((note) => ({
         id: note.id,
         createdAt: note.created_at,
       }));
+      console.log(metadatas);
 
       try {
         const response = await vectorStore.addTexts(texts, metadatas);
@@ -165,11 +165,6 @@ export default function App({ Component, pageProps }) {
       <Head>
         <link rel="icon" href={favicon.src} />
       </Head>
-      {/* <Particles
-        className="absolute inset-0 -z-10 animate-fade-in"
-        quantity={200}
-        // key={router.pathname}
-      /> */}
       <div className="min-h-screen fixed inset-0 -z-10 w-full bg-black bg-grid-white/[0.07] flex items-center justify-center">
         <div className="absolute pointer-events-none inset-0 flex items-center justify-center bg-zinc-950 [mask-image:radial-gradient(ellipse_at_center,transparent_30%,black)]"></div>
       </div>
