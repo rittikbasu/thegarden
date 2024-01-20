@@ -181,6 +181,7 @@ const Search = () => {
             />
           ) : (
             <input
+              autoComplete="off"
               value={searchTerm}
               onChange={(e) => {
                 setSearchTerm(e.target.value);
