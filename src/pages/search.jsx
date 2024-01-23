@@ -102,7 +102,7 @@ const Search = () => {
       score: item.score.toFixed(2),
     }));
 
-    const messages = createMessages(aiSearchTerm, formattedResults);
+    const messages = await createMessages(aiSearchTerm, formattedResults);
 
     complete({ messages }).then((res) => {
       setAIResults(res);

@@ -150,7 +150,7 @@ const Reflect = () => {
       return;
     } else {
       const prompt = `Given below are the journal entries from ${datePickerValue.from} to ${datePickerValue.to}. Write a short and smart summary reflecting on what I've been up to with the heading "Here's a summary of what you've been up to" and provide deep insights and actionable recommendations based on these entries starting with "Here are some insights and recommendations".`;
-      const messages = createMessages(prompt, result);
+      const messages = await createMessages(prompt, result);
       setStreaming(true);
       complete({ messages }).then((response) => {
         setReflection(response);
