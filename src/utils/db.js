@@ -1,9 +1,10 @@
 import Dexie from "dexie";
 
 export const db = new Dexie("thegarden");
-db.version(6).stores({
+db.version(9).stores({
   notes: "id, created_at, text, images, operation, sync",
   reflections: "type, date, text",
+  settings: "name, text, status",
 });
 
 db.notes.hook("creating", function (primaryKey, obj, transaction) {
