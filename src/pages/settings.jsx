@@ -81,7 +81,9 @@ const Settings = () => {
     setSystemPrompt(settings[0]?.text || "");
     setOpenaiApiKey(settings[1]?.text || "");
     setOAKeyInput(settings[1]?.text || "");
-    !settings[1]?.status && setKeyIsValid(false);
+    !settings[1]?.status &&
+      settings[1].text.length !== 0 &&
+      setKeyIsValid(false);
   };
 
   useEffect(() => {
