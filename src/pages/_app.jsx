@@ -2,15 +2,16 @@ import { useEffect, useState } from "react";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import clsx from "clsx";
-import { VectorStorage } from "vector-storage";
 import { useCompletion } from "ai/react";
 
 import Header from "@/components/Header";
 import Navbar from "@/components/Navbar";
 import AddNoteButton from "@/components/AddNoteButton";
 import { db } from "@/utils/db";
-import { getFormattedDate, dateToLocale } from "@/utils/formatNotes";
+import { dateToLocale } from "@/utils/formatNotes";
 import { createMessages } from "@/utils/createMessages";
+import { syncNotes } from "@/utils/syncNotes";
+import { initializeSettings } from "@/utils/initSettings";
 
 import "@/styles/globals.css";
 import favicon from "../../public/icon.png";
@@ -81,7 +82,7 @@ export default function App({ Component, pageProps }) {
       if (result.length !== 0) {
         const prompt =
           "Given below are the journal entries from the last 7 days. Write a smart and concise summary reflecting on what I've been up to with the heading `Here's a summary of what you've been up to` and provide deep insights and recommendations based on these entries starting with `Here are some insights and recommendations`.";
-        const messages = createMessages(prompt, result);
+        const messages = await createMessages(prompt, result);
         complete({ messages }).then((response) => {
           db.reflections.put({
             type: "last7Days",
@@ -97,43 +98,11 @@ export default function App({ Component, pageProps }) {
 
   useEffect(() => {
     let intervalId;
-    const vectorStore = new VectorStorage({
-      openAIApiKey: process.env.NEXT_PUBLIC_OPENAI_API_KEY,
-    });
-
-    const syncNotes = async () => {
-      const unsyncedNotes = await db.notes
-        .where("sync")
-        .equals("false")
-        .toArray();
-      if (unsyncedNotes.length === 0) return;
-      console.log(unsyncedNotes);
-      const texts = unsyncedNotes.map((note) => {
-        const formattedDate = getFormattedDate(note.created_at);
-        return `Date: ${formattedDate}\n${note.text}`;
-      });
-      console.log(texts);
-      const metadatas = unsyncedNotes.map((note) => ({
-        id: note.id,
-        createdAt: note.created_at,
-      }));
-      console.log(metadatas);
-
-      try {
-        const response = await vectorStore.addTexts(texts, metadatas);
-        console.log(response);
-        const updatePromises = unsyncedNotes.map((note) =>
-          db.notes.update(note.id, { sync: "true" })
-        );
-        await Promise.all(updatePromises);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-
     if (typeof window !== "undefined") {
       intervalId = setInterval(syncNotes, 10000);
     }
+
+    initializeSettings();
 
     return () => {
       if (intervalId) clearInterval(intervalId);
@@ -151,13 +120,6 @@ export default function App({ Component, pageProps }) {
       router.events.off("routeChangeStart", handleRouteChange);
     };
   }, [router.asPath, router.events]);
-
-  // const sync = async () => {
-  //   const tableLength = await db.notes.count();
-  //   if (tableLength === 0) {
-  //     await fetchAndStoreData();
-  //   }
-  // };
   return (
     <div
       className={`max-w-lg mx-auto px-8 ${poppins.variable} ${workSans.variable} font-sans`}
@@ -178,7 +140,9 @@ export default function App({ Component, pageProps }) {
               postBtnOpacity
             )}
           >
-            <AddNoteButton animate={postBtnAnimation} />
+            {router.pathname !== "/settings" && (
+              <AddNoteButton animate={postBtnAnimation} />
+            )}
           </div>
         </>
       )}
