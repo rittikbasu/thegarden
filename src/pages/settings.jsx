@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import Head from "next/head";
 import clsx from "clsx";
 import { Toaster, toast } from "sonner";
+import { ThreeDots } from "svg-loaders-react";
 
 import { db } from "@/utils/db";
 
@@ -51,12 +52,16 @@ const Settings = () => {
         })
         .catch((error) => {
           console.error("Error:", error);
+        })
+        .finally(() => {
+          setIsValidating(false);
         });
     } else {
       saveSettings();
+      setKeyIsValid(true);
+      setIsValidating(false);
       toast.success("saved successfully");
     }
-    setIsValidating(false);
   };
 
   const textareaRef = useRef(null);
@@ -78,11 +83,13 @@ const Settings = () => {
       "systemPrompt",
       "openaiApiKey",
     ]);
-    setSystemPrompt(settings[0]?.text || "");
-    setOpenaiApiKey(settings[1]?.text || "");
-    setOAKeyInput(settings[1]?.text || "");
-    !settings[1]?.status &&
-      settings[1].text.length !== 0 &&
+    const systemPromptSettings = settings[0];
+    const openaiApiKeySettings = settings[1];
+    setSystemPrompt(systemPromptSettings?.text || "");
+    setOpenaiApiKey(openaiApiKeySettings?.text || "");
+    setOAKeyInput(openaiApiKeySettings?.text || "");
+    !openaiApiKeySettings?.status &&
+      openaiApiKeySettings?.text &&
       setKeyIsValid(false);
   };
 
@@ -144,9 +151,9 @@ const Settings = () => {
           <button
             type="submit"
             disabled={isValidating}
-            className="py-0.5 px-8 rounded-lg bg-blue-600 shadow-inner shadow-black/50"
+            className="h-7 w-[100px] rounded-lg bg-blue-600 shadow-inner shadow-black/50 flex items-center justify-center"
           >
-            save
+            {isValidating ? <ThreeDots className="w-6 h-6" /> : "save"}
           </button>
         </div>
       </form>
