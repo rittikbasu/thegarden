@@ -12,56 +12,70 @@ const Settings = () => {
   const [keyIsValid, setKeyIsValid] = useState(true);
   const [isValidating, setIsValidating] = useState(false);
   const [systemPrompt, setSystemPrompt] = useState("");
+  const [systemPromptInput, setSystemPromptInput] = useState("");
 
   const handleOpenaiApiKeyChange = (e) => {
     setOAKeyInput(e.target.value);
   };
 
-  const handlePromptChange = (e) => {
-    setSystemPrompt(e.target.value);
+  const handleSystemPromptChange = (e) => {
+    setSystemPromptInput(e.target.value);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+
+    let isSystemPromptChanged = systemPrompt !== systemPromptInput;
+    let isOpenaiApiKeyChanged = openaiApiKey !== OAKeyInput;
+
+    if (!isOpenaiApiKeyChanged && !isSystemPromptChanged) return;
+
     setIsValidating(true);
 
-    const saveSettings = async () => {
-      await db.settings.bulkPut([
-        { name: "systemPrompt", text: systemPrompt, status: true },
-        { name: "openaiApiKey", text: OAKeyInput, status: true },
-      ]);
-    };
-
-    if (openaiApiKey !== OAKeyInput) {
-      fetch("/api/checkApiKey", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ key: OAKeyInput }),
-      })
-        .then((response) => response.json())
-        .then((data) => {
-          if (data.isValid) {
-            setKeyIsValid(true);
-            saveSettings();
-            toast.success("saved successfully");
-          } else {
-            setKeyIsValid(false);
-          }
-        })
-        .catch((error) => {
-          console.error("Error:", error);
-        })
-        .finally(() => {
-          setIsValidating(false);
+    if (isOpenaiApiKeyChanged) {
+      setOpenaiApiKey(OAKeyInput);
+      try {
+        const response = await fetch("/api/checkApiKey", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ key: OAKeyInput }),
         });
-    } else {
-      saveSettings();
-      setKeyIsValid(true);
-      setIsValidating(false);
-      toast.success("saved successfully");
+        const data = await response.json();
+        if (data.isValid) {
+          await db.settings.put({
+            name: "openaiApiKey",
+            text: OAKeyInput,
+            status: true,
+          });
+          setKeyIsValid(true);
+        } else {
+          setKeyIsValid(false);
+          setIsValidating(false);
+          return;
+        }
+      } catch (error) {
+        console.error("Error:", error);
+        setIsValidating(false);
+        return;
+      }
     }
+
+    if (isSystemPromptChanged && keyIsValid) {
+      await db.settings.put({
+        name: "systemPrompt",
+        text: systemPromptInput,
+        status: true,
+      });
+      setSystemPrompt(systemPromptInput);
+    } else if (!keyIsValid) {
+      setIsValidating(false);
+      return;
+    }
+
+    toast.success("saved successfully");
+    setIsValidating(false);
   };
 
   const textareaRef = useRef(null);
@@ -86,6 +100,7 @@ const Settings = () => {
     const systemPromptSettings = settings[0];
     const openaiApiKeySettings = settings[1];
     setSystemPrompt(systemPromptSettings?.text || "");
+    setSystemPromptInput(systemPromptSettings?.text || "");
     setOpenaiApiKey(openaiApiKeySettings?.text || "");
     setOAKeyInput(openaiApiKeySettings?.text || "");
     !openaiApiKeySettings?.status &&
@@ -136,9 +151,9 @@ const Settings = () => {
             system prompt
           </label>
           <textarea
-            value={systemPrompt}
+            value={systemPromptInput}
             placeholder="enter a prompt for the system"
-            onChange={handlePromptChange}
+            onChange={handleSystemPromptChange}
             ref={textareaRef}
             onInput={adjustTextareaHeight}
             required
