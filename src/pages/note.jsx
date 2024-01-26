@@ -171,11 +171,14 @@ export default function NotePage({ previousPath }) {
 
   async function handleSave() {
     if (text !== editedNote || images !== editedImages) {
+      const sync = text !== editedNote;
       try {
         await db.notes
           .update(id, {
             text: editedNote,
             images: editedImages,
+            operation: "update",
+            sync: sync,
           })
           .then((updated) => {
             if (updated) {
