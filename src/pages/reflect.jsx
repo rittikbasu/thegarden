@@ -108,6 +108,10 @@ const Reflect = () => {
     setInputChanged(false);
     if (selectType !== "last7Days" || regenerate) {
       getReflection(regenerate);
+      sessionStorage.setItem(
+        "datePickerValue",
+        JSON.stringify(datePickerValue)
+      );
     } else {
       setReflection(last7DaysReflection);
     }
@@ -132,7 +136,7 @@ const Reflect = () => {
     if (datePickerValue.to) {
       const fromDateUTC = dateToISOString(datePickerValue.from, false);
       const toDateUTC = dateToISOString(datePickerValue.to);
-      console.log(fromDateUTC, toDateUTC, "hehehe");
+      // console.log(fromDateUTC, toDateUTC, "hehehe");
       result = await db.notes
         .where("created_at")
         .between(fromDateUTC, toDateUTC, true, true)
@@ -147,6 +151,7 @@ const Reflect = () => {
     console.log("result", result);
     if (result.length === 0) {
       setReflection("no results found");
+      sessionStorage.setItem("reflection", "no results found");
       return;
     } else {
       const prompt = `Given below are the journal entries from ${datePickerValue.from} to ${datePickerValue.to}. Write a short and smart summary reflecting on what I've been up to with the heading "Here's a summary of what you've been up to" and provide deep insights and actionable recommendations based on these entries starting with "Here are some insights and recommendations".`;
@@ -154,6 +159,7 @@ const Reflect = () => {
       setStreaming(true);
       complete({ messages }).then((response) => {
         setReflection(response);
+        sessionStorage.setItem("reflection", response);
         setStreaming(false);
         if (selectType) {
           db.reflections.put({
@@ -187,6 +193,23 @@ const Reflect = () => {
 
   useEffect(() => {
     getData();
+
+    const storedDatePickerValue = sessionStorage.getItem("datePickerValue");
+    const storedReflection = sessionStorage.getItem("reflection");
+    console.log(storedDatePickerValue, storedReflection);
+
+    if (storedDatePickerValue && storedReflection) {
+      const parsedDatePickerValue = JSON.parse(storedDatePickerValue);
+      const fromDate = new Date(parsedDatePickerValue.from);
+      const toDate = new Date(parsedDatePickerValue.to);
+      setDatePickerValue({
+        from: fromDate,
+        to: toDate,
+        selectValue: parsedDatePickerValue?.selectValue || null,
+      });
+      setSelectType(parsedDatePickerValue?.selectValue || null);
+      setReflection(storedReflection);
+    }
   }, []);
 
   return (
