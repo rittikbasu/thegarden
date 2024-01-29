@@ -22,6 +22,11 @@ function dateToISOString(date, end = true) {
   return date.toISOString();
 }
 
+function saveToSessionStorage(reflection, datePickerValue) {
+  sessionStorage.setItem("reflection", reflection);
+  sessionStorage.setItem("datePickerValue", JSON.stringify(datePickerValue));
+}
+
 const Reflect = () => {
   const today = new Date();
   // last 7 days
@@ -44,15 +49,8 @@ const Reflect = () => {
     to: today,
     selectValue: "last7Days",
   });
-  const [reflection, setReflection] = useState("");
-  const [selectType, setSelectType] = useState("");
-  const [maxDate, setMaxDate] = useState(null);
-  const [minDate, setMinDate] = useState(null);
-  const [inputChanged, setInputChanged] = useState(false);
-  const { complete, completion } = useCompletion({
-    api: "/api/completion",
-  });
-  const [streaming, setStreaming] = useState(false);
+
+  // last 7 days reflection
   const last7DaysReflection = useLiveQuery(() =>
     db.reflections
       .where("type")
@@ -61,17 +59,28 @@ const Reflect = () => {
       .then((result) => {
         console.log(selectType);
         if (result.length === 0) {
-          return "no results found";
+          console.log("no results found");
+          return "";
         }
         if (result[0].date !== dateToLocale(today)) {
-          return "";
+          console.log("last7DaysReflection expired");
+          return;
         } else {
-          // console.log("last7DaysReflection", result[0].text);
-          // setReflection(result[0].text);
+          console.log("last7DaysReflection", result[0].text);
           return result[0].text;
         }
       })
   );
+
+  const [reflection, setReflection] = useState(last7DaysReflection);
+  const [selectType, setSelectType] = useState("");
+  const [maxDate, setMaxDate] = useState(null);
+  const [minDate, setMinDate] = useState(null);
+  const [inputChanged, setInputChanged] = useState(false);
+  const { complete, completion } = useCompletion({
+    api: "/api/completion",
+  });
+  const [streaming, setStreaming] = useState(false);
 
   const handleDatePickerChange = (value) => {
     if (value?.selectValue === selectType) return;
@@ -116,10 +125,12 @@ const Reflect = () => {
     } else {
       setSelectType("last7Days");
       setReflection(last7DaysReflection);
+      saveToSessionStorage(last7DaysReflection, datePickerValue);
     }
   };
 
   const getReflection = async (regenerate) => {
+    // Early return if we have a stored reflection and we're not regenerating.
     if (selectType && !regenerate) {
       const storedReflection = await db.reflections
         .where("type")
@@ -134,51 +145,55 @@ const Reflect = () => {
       }
     }
 
-    let result;
-    if (datePickerValue.to) {
-      const fromDateUTC = dateToISOString(datePickerValue.from, false);
-      const toDateUTC = dateToISOString(datePickerValue.to);
-      // console.log(fromDateUTC, toDateUTC, "hehehe");
-      result = await db.notes
-        .where("created_at")
-        .between(fromDateUTC, toDateUTC, true, true)
-        .toArray();
-    } else {
-      const fromDateUTC = dateToISOString(datePickerValue.from).split("T")[0];
-      result = await db.notes
-        .where("created_at")
-        .startsWith(fromDateUTC)
-        .toArray();
-    }
+    // Determine the date range for the query.
+    const fromDateUTC = dateToISOString(
+      datePickerValue.from,
+      !datePickerValue.to
+    );
+    const toDateUTC = datePickerValue.to && dateToISOString(datePickerValue.to);
+
+    // Fetch notes within the date range.
+    const result = toDateUTC
+      ? await db.notes
+          .where("created_at")
+          .between(fromDateUTC, toDateUTC, true, true)
+          .toArray()
+      : await db.notes
+          .where("created_at")
+          .startsWith(fromDateUTC.split("T")[0])
+          .toArray();
     console.log("result", result);
+
+    // Handle no results scenario.
     if (result.length === 0) {
-      setReflection("no results found");
-      sessionStorage.setItem("reflection", "no results found");
-      sessionStorage.setItem(
-        "datePickerValue",
-        JSON.stringify(datePickerValue)
-      );
+      const noResultsText = "no results found";
+      setReflection(noResultsText);
+      saveToSessionStorage(noResultsText, datePickerValue);
       return;
-    } else {
-      const prompt = `Given below are the journal entries from ${datePickerValue.from} to ${datePickerValue.to}. Write a short and smart summary reflecting on what I've been up to with the heading "Here's a summary of what you've been up to" and provide deep insights and actionable recommendations based on these entries starting with "Here are some insights and recommendations".`;
-      const messages = await createMessages(prompt, result);
-      setStreaming(true);
-      complete({ messages }).then((response) => {
-        setReflection(response);
-        sessionStorage.setItem("reflection", response);
-        sessionStorage.setItem(
-          "datePickerValue",
-          JSON.stringify(datePickerValue)
-        );
-        setStreaming(false);
-        if (selectType) {
-          db.reflections.put({
-            type: selectType,
-            date: dateToLocale(today),
-            text: response,
-          });
-        }
-      });
+    }
+
+    // Generate the prompt for creating messages.
+    const prompt = `Given below are the journal entries from ${datePickerValue.from} to ${datePickerValue.to}. Write a short and smart summary reflecting on what I've been up to with the heading "Here's a summary of what you've been up to" and provide deep insights and actionable recommendations based on these entries starting with "Here are some insights and recommendations".`;
+    const messages = await createMessages(prompt, result);
+
+    // Start the completion process.
+    setStreaming(true);
+    try {
+      const response = await complete({ messages });
+      setReflection(response);
+      saveToSessionStorage(response, datePickerValue);
+      if (selectType) {
+        await db.reflections.put({
+          type: selectType,
+          date: dateToLocale(today),
+          text: response,
+        });
+      }
+    } catch (error) {
+      console.error("Error during completion:", error);
+      // Handle error scenario, e.g., set an error message, retry, etc.
+    } finally {
+      setStreaming(false);
     }
   };
 
@@ -209,19 +224,25 @@ const Reflect = () => {
     console.log(storedDatePickerValue, storedReflection);
 
     if (storedDatePickerValue && storedReflection) {
-      const parsedDatePickerValue = JSON.parse(storedDatePickerValue);
-      const fromDate = new Date(parsedDatePickerValue.from);
-      const toDate = new Date(parsedDatePickerValue.to);
-      const selectValue = parsedDatePickerValue?.selectValue || null;
+      const { from, to, selectValue } = JSON.parse(storedDatePickerValue);
       setDatePickerValue({
-        from: fromDate,
-        to: toDate,
-        selectValue: selectValue,
+        from: new Date(from),
+        to: to ? new Date(to) : undefined,
+        selectValue: selectValue || null,
       });
-      setSelectType(selectValue);
+      setSelectType(selectValue || null);
       setReflection(storedReflection);
+    } else {
+      setSelectType("last7Days");
     }
   }, []);
+
+  useEffect(() => {
+    if (selectType === "last7Days") {
+      console.log(selectType);
+      setReflection(last7DaysReflection);
+    }
+  }, [last7DaysReflection, selectType]);
 
   return (
     <div>
@@ -297,7 +318,7 @@ const Reflect = () => {
               </div>
             </div>
           </div>
-        ) : !last7DaysReflection && selectType === "last7Days" ? (
+        ) : last7DaysReflection === "" && selectType === "last7Days" ? (
           <Skeleton animate={true} />
         ) : (
           <Skeleton />
