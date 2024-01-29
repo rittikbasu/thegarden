@@ -45,7 +45,7 @@ const Reflect = () => {
     selectValue: "last7Days",
   });
   const [reflection, setReflection] = useState("");
-  const [selectType, setSelectType] = useState("last7Days");
+  const [selectType, setSelectType] = useState("");
   const [maxDate, setMaxDate] = useState(null);
   const [minDate, setMinDate] = useState(null);
   const [inputChanged, setInputChanged] = useState(false);
@@ -59,10 +59,15 @@ const Reflect = () => {
       .equals("last7Days")
       .toArray()
       .then((result) => {
-        if (result.length === 0 || result[0].date !== dateToLocale(today))
+        console.log(selectType);
+        if (result.length === 0) {
+          return "no results found";
+        }
+        if (result[0].date !== dateToLocale(today)) {
           return "";
-        if (selectType === "last7Days") {
-          setReflection(result[0].text);
+        } else {
+          // console.log("last7DaysReflection", result[0].text);
+          // setReflection(result[0].text);
           return result[0].text;
         }
       })
@@ -75,13 +80,13 @@ const Reflect = () => {
     setReflection("");
     setDatePickerValue(value);
     setInputChanged(true);
-    console.log("select value changed");
     const dateRanges = {
       last7Days: last7Days,
       last30Days: last30Days,
       allTime: { from: minDate, to: maxDate },
     };
     if (value.selectValue) {
+      console.log("select value changed");
       setSelectType(value.selectValue);
     } else {
       let selectValue = null;
@@ -108,11 +113,8 @@ const Reflect = () => {
     setInputChanged(false);
     if (selectType !== "last7Days" || regenerate) {
       getReflection(regenerate);
-      sessionStorage.setItem(
-        "datePickerValue",
-        JSON.stringify(datePickerValue)
-      );
     } else {
+      setSelectType("last7Days");
       setReflection(last7DaysReflection);
     }
   };
@@ -152,6 +154,10 @@ const Reflect = () => {
     if (result.length === 0) {
       setReflection("no results found");
       sessionStorage.setItem("reflection", "no results found");
+      sessionStorage.setItem(
+        "datePickerValue",
+        JSON.stringify(datePickerValue)
+      );
       return;
     } else {
       const prompt = `Given below are the journal entries from ${datePickerValue.from} to ${datePickerValue.to}. Write a short and smart summary reflecting on what I've been up to with the heading "Here's a summary of what you've been up to" and provide deep insights and actionable recommendations based on these entries starting with "Here are some insights and recommendations".`;
@@ -160,6 +166,10 @@ const Reflect = () => {
       complete({ messages }).then((response) => {
         setReflection(response);
         sessionStorage.setItem("reflection", response);
+        sessionStorage.setItem(
+          "datePickerValue",
+          JSON.stringify(datePickerValue)
+        );
         setStreaming(false);
         if (selectType) {
           db.reflections.put({
@@ -202,12 +212,13 @@ const Reflect = () => {
       const parsedDatePickerValue = JSON.parse(storedDatePickerValue);
       const fromDate = new Date(parsedDatePickerValue.from);
       const toDate = new Date(parsedDatePickerValue.to);
+      const selectValue = parsedDatePickerValue?.selectValue || null;
       setDatePickerValue({
         from: fromDate,
         to: toDate,
-        selectValue: parsedDatePickerValue?.selectValue || null,
+        selectValue: selectValue,
       });
-      setSelectType(parsedDatePickerValue?.selectValue || null);
+      setSelectType(selectValue);
       setReflection(storedReflection);
     }
   }, []);
